@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:radio_poder_app/screens/draw_page.dart';
 import 'package:radio_poder_app/screens/home_page.dart';
-import 'package:radio_poder_app/screens/news_page.dart';
+import 'package:radio_poder_app/screens/noticias_page.dart';
 import 'package:radio_poder_app/screens/profile_page.dart';
 
 class NavigationBarPage extends StatefulWidget {
@@ -15,9 +15,9 @@ class NavigationBarPage extends StatefulWidget {
 class _NavigationBarPageState extends State<NavigationBarPage> {
   int _currentIndex = 0;
 
-  final List<Widget> _pages = const [
+  final List<Widget> _pages = [
     HomePage(),
-    NewsPage(),
+    NoticiasPage(),
     DrawPage(),
     Profile(),
   ];

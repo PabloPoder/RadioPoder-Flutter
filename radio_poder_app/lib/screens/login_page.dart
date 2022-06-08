@@ -5,7 +5,7 @@ import 'package:radio_poder_app/screens/navigation_bar_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
-  static const route = "login_page_route";
+  static const route = "/login_page";
 
   @override
   State<LoginPage> createState() => _LoginPageState();
