@@ -1,123 +1,230 @@
-import 'dart:ui';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:radio_poder_app/screens/navigation_bar_page.dart';
 
-class LoginPage extends StatefulWidget {
+enum AuthMode { Signup, Login }
+
+class LoginPage extends StatelessWidget {
+  static const route = '/login_page';
+
   const LoginPage({Key? key}) : super(key: key);
-  static const route = "/login_page";
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  Widget build(BuildContext context) {
+    final deviceSize = MediaQuery.of(context).size;
+    // final transformConfig = Matrix4.rotationZ(-8 * pi / 180);
+    // transformConfig.translate(-10.0);
+    return Scaffold(
+      // resizeToAvoidBottomInset: false,
+      body: Stack(
+        children: <Widget>[
+          SingleChildScrollView(
+            child: SizedBox(
+              height: deviceSize.height,
+              width: deviceSize.width,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Hero(
+                    tag: "HeadphonesLogo",
+                    child: Image.asset(
+                      "assets/images/logo.png",
+                      height: 150,
+                    ),
+                  ),
+                  const Text(
+                    'Bienvenido!',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 36,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  Flexible(
+                    flex: deviceSize.width > 600 ? 2 : 1,
+                    child: AuthCard(),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
-class _LoginPageState extends State<LoginPage> {
-  bool _isPasswordVisible = false;
+class AuthCard extends StatefulWidget {
+  const AuthCard({Key? key}) : super(key: key);
 
-  void _togglePasswordView() {
+  @override
+  _AuthCardState createState() => _AuthCardState();
+}
+
+class _AuthCardState extends State<AuthCard> {
+  final GlobalKey<FormState> _formKey = GlobalKey();
+  AuthMode _authMode = AuthMode.Login;
+  final Map<String, String> _authData = {
+    'email': '',
+    'password': '',
+  };
+  var _isLoading = false;
+  final _passwordController = TextEditingController();
+
+  void _submit() {
+    if (!_formKey.currentState!.validate()) {
+      // Invalid!
+      return;
+    }
+    _formKey.currentState!.save();
     setState(() {
-      _isPasswordVisible = !_isPasswordVisible;
+      _isLoading = true;
     });
+    if (_authMode == AuthMode.Login) {
+      // Log user in
+    } else {
+      // Sign user up
+    }
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  void _switchAuthMode() {
+    if (_authMode == AuthMode.Login) {
+      setState(() {
+        _authMode = AuthMode.Signup;
+      });
+    } else {
+      setState(() {
+        _authMode = AuthMode.Login;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Container(
-          width: size.width,
-          height: size.height,
-          padding: const EdgeInsets.only(
-            left: 20,
-            right: 20,
-          ),
+    final deviceSize = MediaQuery.of(context).size;
+    return Container(
+      height: _authMode == AuthMode.Signup ? 380 : 320,
+      constraints:
+          BoxConstraints(minHeight: _authMode == AuthMode.Signup ? 380 : 320),
+      width: deviceSize.width * 0.85,
+      padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+      child: Form(
+        key: _formKey,
+        child: SingleChildScrollView(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Hero(
-                tag: "HeadphonesLogo",
-                child: Image.asset(
-                  "assets/images/logo.png",
-                  height: 150,
+            children: <Widget>[
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(20),
+                  ),
+                ),
+                child: TextFormField(
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    hintText: "E-mail",
+                  ),
+                  validator: (value) {
+                    if (value!.isEmpty || !value.contains('@')) {
+                      return 'Email invalido!';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    _authData['email'] = value!;
+                  },
                 ),
               ),
-              const Text(
-                'Bienvenido!',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 36,
-                    fontWeight: FontWeight.bold),
+              const SizedBox(height: 20),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(20),
+                  ),
+                ),
+                child: TextFormField(
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    hintText: "Contraseña",
+                  ),
+                  obscureText: true,
+                  controller: _passwordController,
+                  validator: (value) {
+                    if (value!.isEmpty || value.length < 5) {
+                      return 'La contraseña es demasiado corta!';
+                    }
+                  },
+                  onSaved: (value) {
+                    _authData['password'] = value!;
+                  },
+                ),
               ),
               const SizedBox(height: 20),
-              Column(
-                children: [
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(20),
-                      ),
-                    ),
-                    child: const TextField(
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: "E-mail",
-                      ),
+              if (_authMode == AuthMode.Signup)
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(20),
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(20),
-                      ),
+                  child: TextFormField(
+                    enabled: _authMode == AuthMode.Signup,
+                    decoration: const InputDecoration(
+                      border: InputBorder.none,
+                      hintText: "Confirmar Contraseña",
                     ),
-                    child: TextField(
-                      obscureText: _isPasswordVisible,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: "Password",
-                        suffixIcon: InkWell(
-                          onTap: _togglePasswordView,
-                          child: _isPasswordVisible
-                              ? const Icon(Icons.visibility)
-                              : const Icon(Icons.visibility_off),
-                        ),
-                      ),
-                    ),
+                    obscureText: true,
+                    validator: _authMode == AuthMode.Signup
+                        ? (value) {
+                            if (value != _passwordController.text) {
+                              return 'Las contraseñas no coinciden!';
+                            }
+                          }
+                        : null,
                   ),
-                  const SizedBox(height: 40),
-                  RaisedButton(
-                    onPressed: () {
-                      // TODO: Navigate to NavigationBarPage
-                      Navigator.pushReplacementNamed(
-                          context, NavigationBarPage.route);
-                    },
-                    elevation: 0,
-                    color: Colors.pinkAccent,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        "Ingresar",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, color: Colors.white),
-                      ),
-                    ),
+                ),
+              const SizedBox(height: 20),
+              if (_isLoading)
+                const CircularProgressIndicator()
+              else
+                RaisedButton(
+                  color: Colors.pinkAccent,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
                   ),
-                  TextButton(
-                      onPressed: () {},
-                      child: const Text("No tienes cuenta? Crea una ahora!"))
-                ],
+                  child: Text(
+                      _authMode == AuthMode.Login ? 'Ingresar' : 'Registrarse'),
+                  onPressed: _submit,
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 30.0, vertical: 8.0),
+                  textColor: Colors.white,
+                ),
+              SizedBox(height: 5),
+              FlatButton(
+                child: Text(
+                  _authMode == AuthMode.Login
+                      ? 'No tienes cuenta? Crea una ahora!'
+                      : 'Ingresar con tu cuenta!',
+                  textAlign: TextAlign.center,
+                ),
+                onPressed: _switchAuthMode,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                textColor: Theme.of(context).primaryColor,
               ),
             ],
           ),

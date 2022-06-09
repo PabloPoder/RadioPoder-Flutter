@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:radio_poder_app/providers/noticias.dart';
+import 'package:radio_poder_app/screens/login_page.dart';
 
 import 'screens/login_page.dart';
 import 'screens/navigation_bar_page.dart';
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Radio Poder',
-        home: const NavigationBarPage(),
+        home: const LoginPage(),
         theme: ThemeData(
           appBarTheme: const AppBarTheme(foregroundColor: Colors.black),
         ),
