@@ -55,9 +55,13 @@ class NoticiaDetalle extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(8),
                     child: Text(
-                      noticia.autor +
+                      "por " +
+                          noticia.autor +
                           " · " +
-                          DateFormat.yMd().format(noticia.fecha),
+                          DateFormat.yMd().format(noticia.fecha) +
+                          " · " +
+                          noticia.tiempo.toString() +
+                          " minuto de lectura",
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontSize: 14,

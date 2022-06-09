@@ -14,18 +14,19 @@ class Noticias with ChangeNotifier {
       foto:
           "http://agenciasanluis.com/wp-content/uploads/2022/04/unnamed-4-768x448-1.jpg",
       autor: "Pablo Poder",
+      tiempo: 2,
     ),
     Noticia(
-      id: 2,
-      titulo:
-          "Denuncian otro golpe del Poder Ejecutivo a la Justicia Provincial",
-      texto:
-          "A través de una carta pública, un grupo de profesionales del foro local expresó su repudio a los nombramientos por parte del gobierno provincial de fiscales y defensores adjuntos del Poder Judicial sin evaluación previa.\n\n“Repudiamos dichas designaciones y el accionar de todos los poderes públicos que convalidaron esta grosería institucional e instamos como ciudadanos a que se dé cumplimiento a los procesos evaluatorios dispuestos por las leyes vigentes” expresa el documento que lleva la firma de más de una docena de profesionales.\n\nEse documento advierte que “la discrecionalidad manifiesta de hoy”, puede derivar “en procesos arbitrarios e ilegales el día de mañana, teniendo como principal víctima de ello al ciudadano de a pie”.\n\n“Con profunda preocupación advertimos un nuevo atropello a la Justicia Provincial y a la ciudadanía en general por parte del Poder Ejecutivo de la Provincia, al pretender designar nuevos funcionarios judiciales (fiscales y defensores adjuntos) sin mediar el proceso de evaluación previsto por la Ley Nº VI-615-2008 para aspirantes a cargos de Magistrados y Funcionarios del Poder Judicial, el cual procura —nada más y nada menos— garantizar la idoneidad de los mismos y la legalidad de dichas designaciones en rigor de lo dispuesto por el Art. 23 de la Constitución Provincial”\n\nLa carta pública lleva las firmas de los abogados Francisco Guiñazú, Rafael Berruezo, María Cecilia Hissa, Valentín Laborda Claverie, Santiago Calderón Salomón, Victoria Robledo, Héctor Cangiano (h), Nasrin El Chaer, Eduardo Brizuela, Samar El Chaer, Enrique Ipiña, Claudia Farabelli  y Katherina Lecumberry.",
-      fecha: DateTime(7 - 06 - 2022),
-      foto:
-          "https://i0.wp.com/depolitica.com.ar/wp-content/uploads/2022/06/Superior-Tribunal.webp?w=1383&ssl=1",
-      autor: "Lucille Poder",
-    ),
+        id: 2,
+        titulo:
+            "Denuncian otro golpe del Poder Ejecutivo a la Justicia Provincial",
+        texto:
+            "A través de una carta pública, un grupo de profesionales del foro local expresó su repudio a los nombramientos por parte del gobierno provincial de fiscales y defensores adjuntos del Poder Judicial sin evaluación previa.\n\n“Repudiamos dichas designaciones y el accionar de todos los poderes públicos que convalidaron esta grosería institucional e instamos como ciudadanos a que se dé cumplimiento a los procesos evaluatorios dispuestos por las leyes vigentes” expresa el documento que lleva la firma de más de una docena de profesionales.\n\nEse documento advierte que “la discrecionalidad manifiesta de hoy”, puede derivar “en procesos arbitrarios e ilegales el día de mañana, teniendo como principal víctima de ello al ciudadano de a pie”.\n\n“Con profunda preocupación advertimos un nuevo atropello a la Justicia Provincial y a la ciudadanía en general por parte del Poder Ejecutivo de la Provincia, al pretender designar nuevos funcionarios judiciales (fiscales y defensores adjuntos) sin mediar el proceso de evaluación previsto por la Ley Nº VI-615-2008 para aspirantes a cargos de Magistrados y Funcionarios del Poder Judicial, el cual procura —nada más y nada menos— garantizar la idoneidad de los mismos y la legalidad de dichas designaciones en rigor de lo dispuesto por el Art. 23 de la Constitución Provincial”\n\nLa carta pública lleva las firmas de los abogados Francisco Guiñazú, Rafael Berruezo, María Cecilia Hissa, Valentín Laborda Claverie, Santiago Calderón Salomón, Victoria Robledo, Héctor Cangiano (h), Nasrin El Chaer, Eduardo Brizuela, Samar El Chaer, Enrique Ipiña, Claudia Farabelli  y Katherina Lecumberry.",
+        fecha: DateTime(7 - 06 - 2022),
+        foto:
+            "https://i0.wp.com/depolitica.com.ar/wp-content/uploads/2022/06/Superior-Tribunal.webp?w=1383&ssl=1",
+        autor: "Lucille Poder",
+        tiempo: 1),
     Noticia(
       id: 3,
       titulo: "Otra escuela de Juana Koslay ya tiene su Corazon Recolector",
@@ -35,6 +36,7 @@ class Noticias with ChangeNotifier {
       foto:
           "https://i0.wp.com/infojuanakoslay.com.ar/wp-content/uploads/2022/04/278358312_345947210896541_4121887055379682200_n.jpg?w=1280",
       autor: "Pablo Poder",
+      tiempo: 1,
     ),
   ];
 

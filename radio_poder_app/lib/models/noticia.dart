@@ -7,6 +7,7 @@ class Noticia with ChangeNotifier {
   final DateTime fecha;
   final String foto;
   final String autor;
+  final int tiempo;
 
   Noticia({
     required this.id,
@@ -15,5 +16,6 @@ class Noticia with ChangeNotifier {
     required this.fecha,
     required this.foto,
     required this.autor,
+    required this.tiempo,
   });
 }

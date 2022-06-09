@@ -61,7 +61,10 @@ class NoticiaItem extends StatelessWidget {
                           // DateFormat.yMMMEd().format(noticia.fecha),
                           DateFormat.yMd().format(noticia.fecha) +
                               " · " +
-                              noticia.autor,
+                              noticia.autor +
+                              " · " +
+                              noticia.tiempo.toString() +
+                              " min",
                           style: const TextStyle(
                             color: Colors.grey,
                             fontWeight: FontWeight.bold,
