@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:radio_poder_app/providers/auth.dart';
+import 'package:radio_poder_app/providers/comentarios.dart';
 import 'package:radio_poder_app/providers/noticias.dart';
 import 'package:radio_poder_app/screens/login_page.dart';
 
@@ -28,21 +29,28 @@ class MyApp extends StatelessWidget {
           value: Noticias(),
         ),
         ChangeNotifierProvider.value(
+          value: Comentarios(),
+        ),
+        ChangeNotifierProvider.value(
           value: Auth(),
         ),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Radio Poder',
-        home: const LoginPage(),
-        theme: ThemeData(
-          appBarTheme: const AppBarTheme(foregroundColor: Colors.black),
+      child: Consumer<Auth>(
+        builder: (context, auth, _) => MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Radio Poder',
+          theme: ThemeData(
+            appBarTheme: const AppBarTheme(foregroundColor: Colors.black),
+          ),
+          home: auth.isAuthenticated
+              ? const NavigationBarPage()
+              : const LoginPage(),
+          routes: {
+            LoginPage.route: (context) => const LoginPage(),
+            NavigationBarPage.route: (context) => const NavigationBarPage(),
+            NoticiaDetalle.route: (context) => const NoticiaDetalle(),
+          },
         ),
-        routes: {
-          LoginPage.route: (context) => const LoginPage(),
-          NavigationBarPage.route: (context) => const NavigationBarPage(),
-          NoticiaDetalle.route: (context) => const NoticiaDetalle(),
-        },
       ),
     );
   }

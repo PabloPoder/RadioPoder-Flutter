@@ -6,7 +6,7 @@ import 'package:radio_poder_app/screens/profile_page.dart';
 
 class NavigationBarPage extends StatefulWidget {
   const NavigationBarPage({Key? key}) : super(key: key);
-  static const route = "navigation_bar_page_route";
+  static const route = "navigation_bar_page";
 
   @override
   State<NavigationBarPage> createState() => _NavigationBarPageState();
@@ -16,10 +16,10 @@ class _NavigationBarPageState extends State<NavigationBarPage> {
   int _currentIndex = 0;
 
   final List<Widget> _pages = [
-    HomePage(),
+    const HomePage(),
     NoticiasPage(),
-    DrawPage(),
-    Profile(),
+    const DrawPage(),
+    const Profile(),
   ];
 
   @override

@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import '../models/noticia.dart';
+import '../models/comentario.dart';
+import '../providers/comentarios.dart';
 import '../providers/noticias.dart';
+import '../widgets/comentarioItem.dart';
 
 class NoticiaDetalle extends StatelessWidget {
   static const route = "/noticia_detalle";
@@ -13,6 +15,7 @@ class NoticiaDetalle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final id = ModalRoute.of(context)?.settings.arguments as int;
+
     final noticia = Provider.of<Noticias>(context, listen: false).fetchById(id);
 
     return Scaffold(
@@ -29,7 +32,7 @@ class NoticiaDetalle extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Expanded(
+          Flexible(
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -61,7 +64,7 @@ class NoticiaDetalle extends StatelessWidget {
                           DateFormat.yMd().format(noticia.fecha) +
                           " · " +
                           noticia.tiempo.toString() +
-                          " minuto de lectura",
+                          " minutos de lectura",
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontSize: 14,
@@ -83,7 +86,7 @@ class NoticiaDetalle extends StatelessWidget {
                     padding: const EdgeInsets.all(8),
                     child: Text(
                       noticia.autor +
-                          " · " +
+                          "  ·  " +
                           DateFormat.yMd().format(noticia.fecha),
                       textAlign: TextAlign.center,
                       style: const TextStyle(
@@ -95,14 +98,54 @@ class NoticiaDetalle extends StatelessWidget {
                   const Divider(
                     height: 1,
                   ),
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    child: const Text(
+                  const Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Text(
                       "Deja un comentario",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  const Divider(
+                    height: 1,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    child: const TextField(
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: "Escribe tu comentario",
+                        suffixIcon: Icon(Icons.send),
+                      ),
+                    ),
+                  ),
+                  const Divider(
+                    height: 1,
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Text(
+                      "Comentarios",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  const Divider(
+                    height: 1,
+                  ),
+                  //Comentarios
+                  Consumer<Comentarios>(
+                    builder: (ctx, comentarios, _) => ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: comentarios.fetchById(id).length,
+                      itemBuilder: (ctx, i) => ComentarioItem(
+                        comentario: comentarios.fetchById(id)[i],
                       ),
                     ),
                   ),
