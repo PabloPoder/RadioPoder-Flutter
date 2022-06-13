@@ -19,9 +19,9 @@ class Auth with ChangeNotifier {
     return null;
   }
 
-  // static const Map<String, String> headers = {
-  //   "Content-Type": "application/json; charset=UTF-8"
-  // };
+  static const Map<String, String> headers = {
+    "Content-Type": "application/json; charset=UTF-8"
+  };
 
   Future<void> register(
       String nombre, String apellido, String email, String password) async {
@@ -46,11 +46,11 @@ class Auth with ChangeNotifier {
   }
 
   Future<void> login(String email, String password) async {
-    const url = "https://192.168.1.106:45455/api/Usuarios/Login.json";
+    const url = "https://192.168.1.106:45455/api/Usuarios/Login";
 
     try {
       final response = await http.post(Uri.parse(url),
-          // headers: headers,
+          headers: headers,
           body: json.encode({
             'email': email,
             'password': password,
@@ -59,6 +59,7 @@ class Auth with ChangeNotifier {
       if (response.statusCode == 400) {
         throw (response.body);
       }
+      print(response.body);
 
       _token = response.body;
       notifyListeners();

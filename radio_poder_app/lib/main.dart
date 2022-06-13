@@ -26,13 +26,15 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(
-          value: Noticias(),
+          value: Auth(),
+        ),
+        ChangeNotifierProxyProvider<Auth, Noticias>(
+          create: (_) => Noticias("", []),
+          update: (_, auth, previousNoticias) => Noticias(auth.token!,
+              previousNoticias == null ? [] : previousNoticias.items),
         ),
         ChangeNotifierProvider.value(
           value: Comentarios(),
-        ),
-        ChangeNotifierProvider.value(
-          value: Auth(),
         ),
       ],
       child: Consumer<Auth>(
