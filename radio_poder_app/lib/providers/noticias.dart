@@ -34,13 +34,12 @@ class Noticias with ChangeNotifier {
             titulo: noticia["titulo"],
             texto: noticia["texto"],
             fecha: DateTime.parse(noticia["fecha"]),
-            foto: noticia["foto"],
+            foto: "https://192.168.1.106:45455/" + noticia["foto"],
             autor: noticia["autor"],
             tiempo: noticia["tiempo"]));
       });
-      print(extractedData);
 
-      _items = noticiasCargadas;
+      _items = noticiasCargadas.reversed.toList();
       notifyListeners();
     } catch (e) {
       throw Exception(e.toString());

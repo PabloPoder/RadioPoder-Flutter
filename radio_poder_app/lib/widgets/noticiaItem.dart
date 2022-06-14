@@ -24,20 +24,20 @@ class NoticiaItem extends StatelessWidget {
         child: Row(
           children: [
             Container(
-                decoration: const BoxDecoration(
-                  color: Colors.pink,
-                  borderRadius: BorderRadius.all(Radius.circular(15)),
+              decoration: const BoxDecoration(
+                color: Colors.grey,
+                borderRadius: BorderRadius.all(Radius.circular(15)),
+              ),
+              height: 80,
+              width: 80,
+              child: ClipRRect(
+                borderRadius: const BorderRadius.all(Radius.circular(15)),
+                child: Image.network(
+                  noticia.foto,
+                  fit: BoxFit.cover,
                 ),
-                height: 80,
-                width: 80,
-                // TODO: Agregar foto
-                child: ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(15)),
-                  child: Image.network(
-                    noticia.foto,
-                    fit: BoxFit.cover,
-                  ),
-                )),
+              ),
+            ),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),

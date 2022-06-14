@@ -33,8 +33,10 @@ class MyApp extends StatelessWidget {
           update: (_, auth, previousNoticias) => Noticias(auth.token!,
               previousNoticias == null ? [] : previousNoticias.items),
         ),
-        ChangeNotifierProvider.value(
-          value: Comentarios(),
+        ChangeNotifierProxyProvider<Auth, Comentarios>(
+          create: (_) => Comentarios("", []),
+          update: (_, auth, previousComentarios) => Comentarios(auth.token!,
+              previousComentarios == null ? [] : previousComentarios.items),
         ),
       ],
       child: Consumer<Auth>(

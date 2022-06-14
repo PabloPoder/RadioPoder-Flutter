@@ -17,6 +17,9 @@ class NoticiaDetalle extends StatelessWidget {
     final id = ModalRoute.of(context)?.settings.arguments as int;
 
     final noticia = Provider.of<Noticias>(context, listen: false).fetchById(id);
+    Provider.of<Comentarios>(context, listen: false).fetchAndSetComentarios(id);
+
+    TextEditingController _controller = TextEditingController();
 
     return Scaffold(
       backgroundColor: Colors.grey[200],
@@ -114,11 +117,23 @@ class NoticiaDetalle extends StatelessWidget {
                   ),
                   Container(
                     padding: const EdgeInsets.all(16),
-                    child: const TextField(
+                    child: TextField(
+                      controller: _controller,
                       decoration: InputDecoration(
                         border: InputBorder.none,
                         hintText: "Escribe tu comentario",
-                        suffixIcon: Icon(Icons.send),
+                        suffixIcon: IconButton(
+                          icon: const Icon(Icons.send),
+                          onPressed: () {
+                            if (_controller.text.isNotEmpty ||
+                                _controller.text.length >= 5) {
+                              Provider.of<Comentarios>(context, listen: false)
+                                  .addComentario(_controller.text, noticia.id);
+                              _controller.clear();
+                              FocusManager.instance.primaryFocus?.unfocus();
+                            }
+                          },
+                        ),
                       ),
                     ),
                   ),
@@ -142,10 +157,11 @@ class NoticiaDetalle extends StatelessWidget {
                   //Comentarios
                   Consumer<Comentarios>(
                     builder: (ctx, comentarios, _) => ListView.builder(
+                      reverse: true,
                       shrinkWrap: true,
-                      itemCount: comentarios.fetchById(id).length,
+                      itemCount: comentarios.items.length,
                       itemBuilder: (ctx, i) => ComentarioItem(
-                        comentario: comentarios.fetchById(id)[i],
+                        comentario: comentarios.items[i],
                       ),
                     ),
                   ),

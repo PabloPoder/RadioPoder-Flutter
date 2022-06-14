@@ -20,6 +20,7 @@ class ComentarioItem extends StatelessWidget {
         children: [
           Text(
             comentario.usuario.nombre +
+                " " +
                 comentario.usuario.apellido.toString() +
                 "  ·  " +
                 DateFormat.yMd().format(comentario.fecha),
