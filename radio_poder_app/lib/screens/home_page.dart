@@ -36,7 +36,7 @@ class HomePage extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 const Text(
-                  'Estas escuchando tu radio favorita!',
+                  'Estás escuchando tu radio favorita!',
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
                   textAlign: TextAlign.center,
                 ),
@@ -65,7 +65,7 @@ class HomePage extends StatelessWidget {
                 ]),
                 borderRadius: BorderRadius.all(Radius.circular(32))),
             child: const Text(
-              'Recuerda revisar los sorteos mas recientes!',
+              'Recuerda revisar los sorteos más recientes!',
               style:
                   TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
             ),

@@ -21,6 +21,15 @@ class NoticiaDetalle extends StatelessWidget {
 
     TextEditingController _controller = TextEditingController();
 
+    _submited() {
+      if (_controller.text.isNotEmpty || _controller.text.length >= 5) {
+        Provider.of<Comentarios>(context, listen: false)
+            .addComentario(_controller.text, noticia.id);
+        _controller.clear();
+        FocusManager.instance.primaryFocus?.unfocus();
+      }
+    }
+
     return Scaffold(
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
@@ -121,20 +130,13 @@ class NoticiaDetalle extends StatelessWidget {
                       controller: _controller,
                       decoration: InputDecoration(
                         border: InputBorder.none,
-                        hintText: "Escribe tu comentario",
+                        hintText: "Escribí tu comentario",
                         suffixIcon: IconButton(
                           icon: const Icon(Icons.send),
-                          onPressed: () {
-                            if (_controller.text.isNotEmpty ||
-                                _controller.text.length >= 5) {
-                              Provider.of<Comentarios>(context, listen: false)
-                                  .addComentario(_controller.text, noticia.id);
-                              _controller.clear();
-                              FocusManager.instance.primaryFocus?.unfocus();
-                            }
-                          },
+                          onPressed: () => _submited(),
                         ),
                       ),
+                      onSubmitted: (_) => _submited(),
                     ),
                   ),
                   const Divider(
@@ -156,13 +158,25 @@ class NoticiaDetalle extends StatelessWidget {
                   ),
                   //Comentarios
                   Consumer<Comentarios>(
-                    builder: (ctx, comentarios, _) => ListView.builder(
-                      reverse: true,
-                      shrinkWrap: true,
-                      itemCount: comentarios.items.length,
-                      itemBuilder: (ctx, i) => ComentarioItem(
-                        comentario: comentarios.items[i],
-                      ),
+                    builder: (ctx, comentarios, _) => RefreshIndicator(
+                      onRefresh: () =>
+                          Provider.of<Comentarios>(context, listen: false)
+                              .fetchAndSetComentarios(id),
+                      child: comentarios.items.isNotEmpty
+                          ? ListView.builder(
+                              reverse: true,
+                              shrinkWrap: true,
+                              itemCount: comentarios.items.length,
+                              itemBuilder: (ctx, i) => ComentarioItem(
+                                comentario: comentarios.items[i],
+                              ),
+                            )
+                          : const Padding(
+                              padding: EdgeInsets.all(16),
+                              child: Text(
+                                "No hay comentarios",
+                                style: TextStyle(fontSize: 17),
+                              )),
                     ),
                   ),
                 ],

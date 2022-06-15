@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-class Noticia with ChangeNotifier {
+class Noticia {
   final int id;
   final String titulo;
   final String texto;

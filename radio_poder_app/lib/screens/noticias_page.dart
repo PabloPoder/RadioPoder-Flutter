@@ -34,10 +34,14 @@ class _NoticiasPageState extends State<NoticiasPage> {
   Widget build(BuildContext context) {
     final noticiasData = Provider.of<Noticias>(context);
     final noticias = noticiasData.items;
-    return ListView.builder(
-      itemCount: noticias.length,
-      itemBuilder: (ctx, i) => NoticiaItem(
-        noticia: noticias[i],
+    return RefreshIndicator(
+      onRefresh: () =>
+          Provider.of<Noticias>(context, listen: false).fetchAndSetNoticias(),
+      child: ListView.builder(
+        itemCount: noticias.length,
+        itemBuilder: (ctx, i) => NoticiaItem(
+          noticia: noticias[i],
+        ),
       ),
     );
   }

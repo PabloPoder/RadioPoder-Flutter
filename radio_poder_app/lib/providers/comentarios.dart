@@ -95,4 +95,22 @@ class Comentarios with ChangeNotifier {
       throw Exception(e.toString());
     }
   }
+
+  Future<void> deleteComentario(int id) async {
+    const url = "https://192.168.1.106:45455/api/Comentarios/id";
+
+    try {
+      final response = await http.delete(Uri.parse(url),
+          headers: {
+            "Authorization": "Bearer " + _token,
+            "Content-Type": "application/json; charset=UTF-8"
+          },
+          body: json.encode({"id": id}));
+
+      _items.removeWhere((comentario) => comentario.id == id);
+      notifyListeners();
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
 }

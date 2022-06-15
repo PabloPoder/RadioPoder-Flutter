@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:radio_poder_app/models/usuario.dart';
+import 'package:radio_poder_app/providers/auth.dart';
 import 'package:radio_poder_app/screens/draw_page.dart';
 import 'package:radio_poder_app/screens/home_page.dart';
 import 'package:radio_poder_app/screens/noticias_page.dart';
@@ -13,6 +16,7 @@ class NavigationBarPage extends StatefulWidget {
 }
 
 class _NavigationBarPageState extends State<NavigationBarPage> {
+  var _isInit = true;
   int _currentIndex = 0;
 
   final List<Widget> _pages = [
@@ -21,6 +25,15 @@ class _NavigationBarPageState extends State<NavigationBarPage> {
     const DrawPage(),
     const Profile(),
   ];
+
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      Provider.of<Auth>(context).usuarioLogeado();
+      _isInit = false;
+    }
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
