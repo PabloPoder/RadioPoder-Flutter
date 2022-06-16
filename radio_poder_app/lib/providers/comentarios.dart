@@ -97,15 +97,20 @@ class Comentarios with ChangeNotifier {
   }
 
   Future<void> deleteComentario(int id) async {
-    const url = "https://192.168.1.106:45455/api/Comentarios/id";
+    final url = "https://192.168.1.106:45455/api/Comentarios/$id";
 
     try {
       final response = await http.delete(Uri.parse(url),
           headers: {
             "Authorization": "Bearer " + _token,
-            "Content-Type": "application/json; charset=UTF-8"
           },
-          body: json.encode({"id": id}));
+          body: json.encode({
+            "id": id,
+          }));
+
+      if (response.statusCode == 400) {
+        throw (response.body);
+      }
 
       _items.removeWhere((comentario) => comentario.id == id);
       notifyListeners();

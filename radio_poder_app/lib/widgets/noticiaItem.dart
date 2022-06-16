@@ -34,6 +34,14 @@ class NoticiaItem extends StatelessWidget {
                 borderRadius: const BorderRadius.all(Radius.circular(15)),
                 child: Image.network(
                   noticia.foto,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return const Center(
+                        child: Icon(
+                      Icons.image,
+                      color: Colors.white,
+                    ));
+                  },
                   fit: BoxFit.cover,
                 ),
               ),

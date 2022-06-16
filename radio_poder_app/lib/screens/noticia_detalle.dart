@@ -17,16 +17,27 @@ class NoticiaDetalle extends StatelessWidget {
     final id = ModalRoute.of(context)?.settings.arguments as int;
 
     final noticia = Provider.of<Noticias>(context, listen: false).fetchById(id);
-    Provider.of<Comentarios>(context, listen: false).fetchAndSetComentarios(id);
+    // Provider.of<Comentarios>(context, listen: false).fetchAndSetComentarios(id);
 
     TextEditingController _controller = TextEditingController();
 
-    _submited() {
+    Future<void> _submit() async {
+      FocusManager.instance.primaryFocus?.unfocus();
+
       if (_controller.text.isNotEmpty || _controller.text.length >= 5) {
-        Provider.of<Comentarios>(context, listen: false)
-            .addComentario(_controller.text, noticia.id);
+        try {
+          await Provider.of<Comentarios>(context, listen: false)
+              .addComentario(_controller.text, noticia.id);
+        } catch (e) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Center(child: Text('Error al enviar comentario')),
+              backgroundColor: Colors.red,
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
         _controller.clear();
-        FocusManager.instance.primaryFocus?.unfocus();
       }
     }
 
@@ -45,141 +56,193 @@ class NoticiaDetalle extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Flexible(
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    child: Image.network(
-                      noticia.foto,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    child: Text(
-                      noticia.titulo,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
+            child: RefreshIndicator(
+              onRefresh: () => Provider.of<Comentarios>(context, listen: false)
+                  .fetchAndSetComentarios(id),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      child: Image.network(
+                        noticia.foto,
+                        fit: BoxFit.cover,
                       ),
                     ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    child: Text(
-                      "por " +
-                          noticia.autor +
-                          " · " +
-                          DateFormat.yMd().format(noticia.fecha) +
-                          " · " +
-                          noticia.tiempo.toString() +
-                          " minutos de lectura",
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    child: Text(
-                      noticia.texto,
-                      textAlign: TextAlign.start,
-                      style: const TextStyle(
-                        fontSize: 17,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    child: Text(
-                      noticia.autor +
-                          "  ·  " +
-                          DateFormat.yMd().format(noticia.fecha),
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ),
-                  const Divider(
-                    height: 1,
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.all(16),
-                    child: Text(
-                      "Deja un comentario",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  const Divider(
-                    height: 1,
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    child: TextField(
-                      controller: _controller,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: "Escribí tu comentario",
-                        suffixIcon: IconButton(
-                          icon: const Icon(Icons.send),
-                          onPressed: () => _submited(),
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      child: Text(
+                        noticia.titulo,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                      onSubmitted: (_) => _submited(),
                     ),
-                  ),
-                  const Divider(
-                    height: 1,
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.all(16),
-                    child: Text(
-                      "Comentarios",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.bold,
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      child: Text(
+                        "por " +
+                            noticia.autor +
+                            " · " +
+                            DateFormat.yMd().format(noticia.fecha) +
+                            " · " +
+                            noticia.tiempo.toString() +
+                            " minutos de lectura",
+                        textAlign: TextAlign.center,
+                        style:
+                            const TextStyle(fontSize: 14, color: Colors.grey),
                       ),
                     ),
-                  ),
-                  const Divider(
-                    height: 1,
-                  ),
-                  //Comentarios
-                  Consumer<Comentarios>(
-                    builder: (ctx, comentarios, _) => RefreshIndicator(
-                      onRefresh: () =>
-                          Provider.of<Comentarios>(context, listen: false)
-                              .fetchAndSetComentarios(id),
-                      child: comentarios.items.isNotEmpty
-                          ? ListView.builder(
-                              reverse: true,
-                              shrinkWrap: true,
-                              itemCount: comentarios.items.length,
-                              itemBuilder: (ctx, i) => ComentarioItem(
-                                comentario: comentarios.items[i],
-                              ),
-                            )
-                          : const Padding(
-                              padding: EdgeInsets.all(16),
-                              child: Text(
-                                "No hay comentarios",
-                                style: TextStyle(fontSize: 17),
-                              )),
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      child: Text(
+                        noticia.texto,
+                        textAlign: TextAlign.start,
+                        style: const TextStyle(
+                          fontSize: 17,
+                        ),
+                      ),
                     ),
-                  ),
-                ],
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      child: Text(
+                        noticia.autor +
+                            "  ·  " +
+                            DateFormat.yMd().format(noticia.fecha),
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                    const Divider(
+                      height: 1,
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Text(
+                        "Deja un comentario",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    const Divider(
+                      height: 1,
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      child: TextField(
+                        controller: _controller,
+                        textCapitalization: TextCapitalization.sentences,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: "Escribí tu comentario",
+                          suffixIcon: IconButton(
+                            icon: const Icon(Icons.send),
+                            onPressed: _submit,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const Divider(
+                      height: 1,
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Text(
+                        "Comentarios",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    const Divider(
+                      height: 1,
+                    ),
+                    FutureBuilder(
+                      future: Provider.of<Comentarios>(context, listen: false)
+                          .fetchAndSetComentarios(id),
+                      builder: (ctx, dataSnapshot) {
+                        if (dataSnapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
+                        if (dataSnapshot.error != null) {
+                          var comentarios =
+                              Provider.of<Comentarios>(context, listen: false)
+                                  .items
+                                  .where((element) => element.noticiaId == id);
+
+                          return comentarios.isEmpty
+                              ? const Center(
+                                  child: Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child:
+                                        Text("Error al cargar los comentarios"),
+                                  ),
+                                )
+                              : Consumer<Comentarios>(
+                                  // TODO: Revisar el consumo para ver si se puede usar.
+                                  //Si no, retornar solo el ListView.Builder
+                                  builder: (ctx, comentarios, _) => comentarios
+                                          .items.isNotEmpty
+                                      ? ListView.builder(
+                                          reverse: true,
+                                          shrinkWrap: true,
+                                          physics:
+                                              const NeverScrollableScrollPhysics(),
+                                          itemCount: comentarios.items.length,
+                                          itemBuilder: (ctx, i) =>
+                                              ComentarioItem(
+                                            comentario: comentarios.items[i],
+                                          ),
+                                        )
+                                      : const Padding(
+                                          padding: EdgeInsets.all(16),
+                                          child: Text(
+                                            "Aún no hay comentarios",
+                                            style: TextStyle(fontSize: 17),
+                                          ),
+                                        ),
+                                );
+                        } else {
+                          return Consumer<Comentarios>(
+                            builder: (ctx, comentarios, _) =>
+                                comentarios.items.isNotEmpty
+                                    ? ListView.builder(
+                                        reverse: true,
+                                        shrinkWrap: true,
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        itemCount: comentarios.items.length,
+                                        itemBuilder: (ctx, i) => ComentarioItem(
+                                          comentario: comentarios.items[i],
+                                        ),
+                                      )
+                                    : const Padding(
+                                        padding: EdgeInsets.all(16),
+                                        child: Text(
+                                          "Aún no hay comentarios",
+                                          style: TextStyle(fontSize: 17),
+                                        ),
+                                      ),
+                          );
+                        }
+                      },
+                    )
+                    //Comentarios
+                  ],
+                ),
               ),
             ),
           ),
