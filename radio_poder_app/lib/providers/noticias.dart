@@ -6,7 +6,7 @@ import 'package:radio_poder_app/providers/auth.dart';
 import '../models/noticia.dart';
 
 class Noticias with ChangeNotifier {
-  String _token;
+  String? _token;
 
   Noticias(this._token, this._items);
 
@@ -20,7 +20,7 @@ class Noticias with ChangeNotifier {
     const url = "https://192.168.1.106:45455/api/Noticias/GetAll";
     try {
       final response = await http.get(Uri.parse(url), headers: {
-        "Authorization": "Bearer " + _token,
+        "Authorization": "Bearer " + _token!,
       });
       final extractedData = json.decode(response.body) as List<dynamic>;
       if (extractedData == null) {

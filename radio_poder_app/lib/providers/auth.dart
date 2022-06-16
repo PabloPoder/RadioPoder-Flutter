@@ -6,7 +6,6 @@ import 'package:radio_poder_app/models/usuario.dart';
 
 class Auth with ChangeNotifier {
   String? _token;
-  DateTime? _expiryDate;
   Usuario? _usuario;
 
   Usuario? get usuario {
@@ -67,7 +66,6 @@ class Auth with ChangeNotifier {
       if (response.statusCode == 400) {
         throw (response.body);
       }
-      print(response.body);
 
       _token = response.body;
       notifyListeners();
@@ -76,9 +74,9 @@ class Auth with ChangeNotifier {
     }
   }
 
-  Future<void> logout() async {
+  logout() {
     _token = null;
-    _expiryDate = null;
+    notifyListeners();
   }
 
   Future<void> usuarioLogeado() async {

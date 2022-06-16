@@ -8,7 +8,7 @@ import '../models/usuario.dart';
 import 'package:http/http.dart' as http;
 
 class Comentarios with ChangeNotifier {
-  String _token;
+  String? _token;
 
   Comentarios(this._token, this._items);
 
@@ -30,7 +30,7 @@ class Comentarios with ChangeNotifier {
     final url = "https://192.168.1.106:45455/api/Comentarios/$id";
     try {
       final response = await http.get(Uri.parse(url), headers: {
-        "Authorization": "Bearer " + _token,
+        "Authorization": "Bearer " + _token!,
       });
 
       final extractedData = json.decode(response.body) as List<dynamic>;
@@ -68,7 +68,7 @@ class Comentarios with ChangeNotifier {
     try {
       final response = await http.post(Uri.parse(url),
           headers: {
-            "Authorization": "Bearer " + _token,
+            "Authorization": "Bearer " + _token!,
             "Content-Type": "application/json; charset=UTF-8"
           },
           body: json.encode({
@@ -102,7 +102,7 @@ class Comentarios with ChangeNotifier {
     try {
       final response = await http.delete(Uri.parse(url),
           headers: {
-            "Authorization": "Bearer " + _token,
+            "Authorization": "Bearer " + _token!,
           },
           body: json.encode({
             "id": id,

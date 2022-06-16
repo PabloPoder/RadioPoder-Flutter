@@ -7,6 +7,8 @@ import 'package:radio_poder_app/screens/home_page.dart';
 import 'package:radio_poder_app/screens/noticias_page.dart';
 import 'package:radio_poder_app/screens/profile_page.dart';
 
+import 'login_page.dart';
+
 class NavigationBarPage extends StatefulWidget {
   const NavigationBarPage({Key? key}) : super(key: key);
   static const route = "navigation_bar_page";
@@ -35,6 +37,29 @@ class _NavigationBarPageState extends State<NavigationBarPage> {
     super.didChangeDependencies();
   }
 
+  _showDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Cerrar sesión"),
+        content: const Text("¿Estás seguro de cerrar sesión?"),
+        actions: <Widget>[
+          FlatButton(
+            child: const Text("Cancelar"),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          FlatButton(
+            child: const Text("Cerrar sesión"),
+            onPressed: () {
+              Provider.of<Auth>(context, listen: false).logout();
+              Navigator.of(context).pushReplacementNamed(LoginPage.route);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,6 +69,12 @@ class _NavigationBarPageState extends State<NavigationBarPage> {
           'R A D I O   P O D E R',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.exit_to_app),
+            onPressed: _showDialog,
+          ),
+        ],
         centerTitle: true,
         backgroundColor: Colors.white,
         elevation: 0.5,

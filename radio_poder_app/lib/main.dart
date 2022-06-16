@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProxyProvider<Auth, Noticias>(
           create: (_) => Noticias("", []),
-          update: (_, auth, previousNoticias) => Noticias(auth.token!,
+          update: (_, auth, previousNoticias) => Noticias(auth.token,
               previousNoticias == null ? [] : previousNoticias.items),
         ),
         ChangeNotifierProxyProvider<Auth, Comentarios>(
