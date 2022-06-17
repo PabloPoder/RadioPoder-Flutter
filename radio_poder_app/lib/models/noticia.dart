@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 class Noticia {
   final int id;
   final String titulo;

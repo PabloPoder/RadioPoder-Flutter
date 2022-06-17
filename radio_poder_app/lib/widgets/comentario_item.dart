@@ -1,7 +1,6 @@
-import 'dart:math';
+// ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:provider/provider.dart';
 

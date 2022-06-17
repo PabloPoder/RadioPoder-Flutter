@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:radio_poder_app/providers/auth.dart';
 import '../models/noticia.dart';
 
 class Noticias with ChangeNotifier {
@@ -23,12 +22,13 @@ class Noticias with ChangeNotifier {
         "Authorization": "Bearer " + _token!,
       });
       final extractedData = json.decode(response.body) as List<dynamic>;
+      // ignore: unnecessary_null_comparison
       if (extractedData == null) {
         return;
       }
 
       final List<Noticia> noticiasCargadas = [];
-      extractedData.forEach((noticia) {
+      for (var noticia in extractedData) {
         noticiasCargadas.add(Noticia(
             id: noticia["id"],
             titulo: noticia["titulo"],
@@ -37,7 +37,7 @@ class Noticias with ChangeNotifier {
             foto: "https://192.168.1.106:45455/" + noticia["foto"],
             autor: noticia["autor"],
             tiempo: noticia["tiempo"]));
-      });
+      }
 
       _items = noticiasCargadas.reversed.toList();
       notifyListeners();

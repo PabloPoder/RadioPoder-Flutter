@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:radio_poder_app/models/comentario.dart';
-import '../models/noticia.dart';
 import '../models/usuario.dart';
 
 import 'package:http/http.dart' as http;
@@ -34,12 +33,13 @@ class Comentarios with ChangeNotifier {
       });
 
       final extractedData = json.decode(response.body) as List<dynamic>;
+      // ignore: unnecessary_null_comparison
       if (extractedData == null) {
         return;
       }
 
       final List<Comentario> comentariosCargados = [];
-      extractedData.forEach((comentario) {
+      for (var comentario in extractedData) {
         comentariosCargados.add(Comentario(
           id: comentario["id"],
           texto: comentario["texto"],
@@ -54,7 +54,7 @@ class Comentarios with ChangeNotifier {
           ),
           noticiaId: comentario["noticiaId"],
         ));
-      });
+      }
 
       _items = comentariosCargados;
       notifyListeners();

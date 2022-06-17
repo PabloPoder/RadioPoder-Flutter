@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:radio_poder_app/screens/navigation_bar_page.dart';
 
 import '../providers/auth.dart';
 

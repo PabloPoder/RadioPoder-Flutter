@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../models/noticia.dart';
 import '../providers/noticias.dart';
-import '../widgets/noticiaItem.dart';
+import '../widgets/noticia_item.dart';
 
 class NoticiasPage extends StatefulWidget {
   @override

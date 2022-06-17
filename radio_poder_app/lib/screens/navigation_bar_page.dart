@@ -1,6 +1,7 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:radio_poder_app/models/usuario.dart';
 import 'package:radio_poder_app/providers/auth.dart';
 import 'package:radio_poder_app/screens/draw_page.dart';
 import 'package:radio_poder_app/screens/home_page.dart';
@@ -49,10 +50,14 @@ class _NavigationBarPageState extends State<NavigationBarPage> {
             onPressed: () => Navigator.of(context).pop(),
           ),
           FlatButton(
-            child: const Text("Cerrar sesión"),
+            child: const Text(
+              "Cerrar sesión",
+              style: TextStyle(color: Colors.red),
+            ),
             onPressed: () {
-              Provider.of<Auth>(context, listen: false).logout();
+              Navigator.of(context).pop();
               Navigator.of(context).pushReplacementNamed(LoginPage.route);
+              Provider.of<Auth>(context, listen: false).logout();
             },
           ),
         ],

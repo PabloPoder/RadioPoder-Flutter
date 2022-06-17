@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import '../models/comentario.dart';
 import '../providers/comentarios.dart';
 import '../providers/noticias.dart';
-import '../widgets/comentarioItem.dart';
+import '../widgets/comentario_item.dart';
 
 class NoticiaDetalle extends StatelessWidget {
   static const route = "/noticia_detalle";

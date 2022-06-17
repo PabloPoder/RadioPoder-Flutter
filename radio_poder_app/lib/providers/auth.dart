@@ -1,12 +1,16 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:radio_poder_app/models/usuario.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Auth with ChangeNotifier {
   String? _token;
   Usuario? _usuario;
+  DateTime? _expirtyDate;
+  Timer? _authTimer;
 
   Usuario? get usuario {
     if (_usuario != null) {
@@ -20,7 +24,9 @@ class Auth with ChangeNotifier {
   }
 
   String? get token {
-    if (_token != null) {
+    if (_expirtyDate != null &&
+        _expirtyDate!.isAfter(DateTime.now()) &&
+        _token != null) {
       return _token;
     }
     return null;
@@ -68,15 +74,70 @@ class Auth with ChangeNotifier {
       }
 
       _token = response.body;
+      // TODO: devolver el tiempo de expiración del token desde la api
+      // No deberia estar hardcodeado
+      _expirtyDate = DateTime.now().add(
+        const Duration(
+          minutes: 60,
+        ),
+      );
+
+      _autoLogout();
       notifyListeners();
+      // Guardando el token (y otros datos) en el dispositivo para que se
+      //pueda acceder sin necesidad de logearse
+      final prefs = await SharedPreferences.getInstance();
+      final userData = json.encode({
+        'token': _token,
+        'expiryDate': _expirtyDate!.toIso8601String(),
+      });
+      prefs.setString('userData', userData);
     } catch (error) {
       rethrow;
     }
   }
 
-  logout() {
-    _token = null;
+  Future<bool> tryAutoLogin() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (!prefs.containsKey('userData')) {
+      return false;
+    }
+
+    final extractedUserData =
+        json.decode(prefs.getString('userData')!) as Map<String, dynamic>;
+    final expiryDate =
+        DateTime.parse(extractedUserData['expiryDate'].toString());
+
+    if (expiryDate.isBefore(DateTime.now())) {
+      return false;
+    }
+    _token = extractedUserData['token'].toString();
+    _expirtyDate = expiryDate;
     notifyListeners();
+    _autoLogout();
+    return true;
+  }
+
+  Future<void> logout() async {
+    _token = null;
+    _expirtyDate = null;
+    _usuario = null;
+    if (_authTimer != null) {
+      _authTimer!.cancel();
+      _authTimer = null;
+    }
+    notifyListeners();
+
+    final prefs = await SharedPreferences.getInstance();
+    prefs.clear();
+  }
+
+  void _autoLogout() {
+    if (_authTimer != null) {
+      _authTimer!.cancel();
+    }
+    final timeToExpiry = _expirtyDate!.difference(DateTime.now()).inSeconds;
+    _authTimer = Timer(Duration(seconds: timeToExpiry), logout);
   }
 
   Future<void> usuarioLogeado() async {
@@ -88,6 +149,7 @@ class Auth with ChangeNotifier {
       });
 
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
+      // ignore: unnecessary_null_comparison
       if (extractedData == null) {
         return;
       }
@@ -102,8 +164,6 @@ class Auth with ChangeNotifier {
 
       _usuario = usuarioCargado;
       notifyListeners();
-
-      print(usuarioCargado);
     } catch (e) {
       throw Exception(e.toString());
     }
