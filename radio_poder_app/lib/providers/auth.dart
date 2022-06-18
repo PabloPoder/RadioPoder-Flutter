@@ -168,4 +168,40 @@ class Auth with ChangeNotifier {
       throw Exception(e.toString());
     }
   }
+
+  Future<void> editarUsuario(
+      String nombre, String apellido, String password) async {
+    final url =
+        "https://192.168.1.106:45455/api/Usuarios/EditarUsuario/${_usuario!.id}";
+
+    try {
+      final response = await http.put(Uri.parse(url),
+          headers: {
+            "Authorization": "Bearer " + _token!,
+            "Content-Type": "application/json; charset=UTF-8"
+          },
+          body: json.encode({
+            'nombre': nombre,
+            'apellido': apellido,
+            'password': password,
+            'id': _usuario!.id,
+            'email': _usuario!.email,
+          }));
+
+      if (response.statusCode == 400) {
+        throw (response.body);
+      }
+
+      _usuario = Usuario(
+        id: json.decode(response.body)['id'],
+        nombre: json.decode(response.body)['nombre'],
+        apellido: json.decode(response.body)['apellido'],
+        email: json.decode(response.body)['email'],
+      );
+
+      notifyListeners();
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
 }

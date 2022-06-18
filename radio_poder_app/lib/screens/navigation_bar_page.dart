@@ -6,7 +6,7 @@ import 'package:radio_poder_app/providers/auth.dart';
 import 'package:radio_poder_app/screens/draw_page.dart';
 import 'package:radio_poder_app/screens/home_page.dart';
 import 'package:radio_poder_app/screens/noticias_page.dart';
-import 'package:radio_poder_app/screens/profile_page.dart';
+import 'package:radio_poder_app/screens/perfil_page.dart';
 
 import 'login_page.dart';
 
@@ -26,13 +26,12 @@ class _NavigationBarPageState extends State<NavigationBarPage> {
     const HomePage(),
     NoticiasPage(),
     const DrawPage(),
-    const Profile(),
+    // const PerfilPage(),
   ];
 
   @override
   void didChangeDependencies() {
     if (_isInit) {
-      Provider.of<Auth>(context).usuarioLogeado();
       _isInit = false;
     }
     super.didChangeDependencies();
@@ -56,7 +55,7 @@ class _NavigationBarPageState extends State<NavigationBarPage> {
             ),
             onPressed: () {
               Navigator.of(context).pop();
-              Navigator.of(context).pushReplacementNamed(LoginPage.route);
+              Navigator.of(context).pushReplacementNamed('/');
               Provider.of<Auth>(context, listen: false).logout();
             },
           ),

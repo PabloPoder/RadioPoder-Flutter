@@ -91,7 +91,7 @@ class _AuthCardState extends State<AuthCard> {
               content: Text(message),
               actions: <Widget>[
                 FlatButton(
-                  child: Text('Ok'),
+                  child: const Text('Ok'),
                   onPressed: () {
                     Navigator.of(ctx).pop();
                   },
