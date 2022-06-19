@@ -82,6 +82,7 @@ class Auth with ChangeNotifier {
         ),
       );
 
+      usuarioLogeado();
       _autoLogout();
       notifyListeners();
       // Guardando el token (y otros datos) en el dispositivo para que se
@@ -113,6 +114,7 @@ class Auth with ChangeNotifier {
     }
     _token = extractedUserData['token'].toString();
     _expirtyDate = expiryDate;
+    usuarioLogeado();
     notifyListeners();
     _autoLogout();
     return true;

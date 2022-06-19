@@ -5,7 +5,9 @@ import 'package:provider/provider.dart';
 import 'package:radio_poder_app/providers/auth.dart';
 import 'package:radio_poder_app/providers/comentarios.dart';
 import 'package:radio_poder_app/providers/noticias.dart';
+import 'package:radio_poder_app/screens/sorteo_detalle.dart';
 
+import 'providers/sorteos.dart';
 import 'screens/login_page.dart';
 import 'screens/splash_screen.dart';
 import 'screens/navigation_bar_page.dart';
@@ -38,6 +40,14 @@ class MyApp extends StatelessWidget {
           update: (_, auth, previousComentarios) => Comentarios(auth.token,
               previousComentarios == null ? [] : previousComentarios.items),
         ),
+        ChangeNotifierProxyProvider<Auth, Sorteos>(
+          create: (_) => Sorteos(
+            "",
+          ),
+          update: (_, auth, previousSorteos) => Sorteos(
+            auth.token,
+          ),
+        ),
       ],
       child: Consumer<Auth>(
         builder: (context, auth, _) => MaterialApp(
@@ -60,6 +70,7 @@ class MyApp extends StatelessWidget {
             LoginPage.route: (context) => const LoginPage(),
             NavigationBarPage.route: (context) => const NavigationBarPage(),
             NoticiaDetalle.route: (context) => const NoticiaDetalle(),
+            SorteoDetalle.route: (context) => const SorteoDetalle(),
           },
         ),
       ),

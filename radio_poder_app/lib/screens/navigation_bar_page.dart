@@ -3,12 +3,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:radio_poder_app/providers/auth.dart';
-import 'package:radio_poder_app/screens/draw_page.dart';
+import 'package:radio_poder_app/screens/sorteos_page.dart';
 import 'package:radio_poder_app/screens/home_page.dart';
 import 'package:radio_poder_app/screens/noticias_page.dart';
 import 'package:radio_poder_app/screens/perfil_page.dart';
-
-import 'login_page.dart';
 
 class NavigationBarPage extends StatefulWidget {
   const NavigationBarPage({Key? key}) : super(key: key);
@@ -19,23 +17,14 @@ class NavigationBarPage extends StatefulWidget {
 }
 
 class _NavigationBarPageState extends State<NavigationBarPage> {
-  var _isInit = true;
   int _currentIndex = 0;
 
   final List<Widget> _pages = [
     const HomePage(),
-    NoticiasPage(),
-    const DrawPage(),
-    // const PerfilPage(),
+    const NoticiasPage(),
+    const SorteosPage(),
+    const PerfilPage(),
   ];
-
-  @override
-  void didChangeDependencies() {
-    if (_isInit) {
-      _isInit = false;
-    }
-    super.didChangeDependencies();
-  }
 
   _showDialog() {
     showDialog(

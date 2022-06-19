@@ -7,11 +7,16 @@ import '../providers/comentarios.dart';
 import '../providers/noticias.dart';
 import '../widgets/comentario_item.dart';
 
-class NoticiaDetalle extends StatelessWidget {
+class NoticiaDetalle extends StatefulWidget {
   static const route = "/noticia_detalle";
 
   const NoticiaDetalle({Key? key}) : super(key: key);
 
+  @override
+  State<NoticiaDetalle> createState() => _NoticiaDetalleState();
+}
+
+class _NoticiaDetalleState extends State<NoticiaDetalle> {
   @override
   Widget build(BuildContext context) {
     final id = ModalRoute.of(context)?.settings.arguments as int;
@@ -33,7 +38,7 @@ class NoticiaDetalle extends StatelessWidget {
             const SnackBar(
               content: Center(child: Text('Error al enviar comentario')),
               backgroundColor: Colors.red,
-              duration: Duration(seconds: 2),
+              duration: Duration(seconds: 4),
             ),
           );
         }
@@ -183,38 +188,12 @@ class NoticiaDetalle extends StatelessWidget {
                                   .items
                                   .where((element) => element.noticiaId == id);
 
-                          return comentarios.isEmpty
-                              ? const Center(
-                                  child: Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child:
-                                        Text("Error al cargar los comentarios"),
-                                  ),
-                                )
-                              : Consumer<Comentarios>(
-                                  // TODO: Revisar el consumo para ver si se puede usar.
-                                  //Si no, retornar solo el ListView.Builder
-                                  builder: (ctx, comentarios, _) => comentarios
-                                          .items.isNotEmpty
-                                      ? ListView.builder(
-                                          reverse: true,
-                                          shrinkWrap: true,
-                                          physics:
-                                              const NeverScrollableScrollPhysics(),
-                                          itemCount: comentarios.items.length,
-                                          itemBuilder: (ctx, i) =>
-                                              ComentarioItem(
-                                            comentario: comentarios.items[i],
-                                          ),
-                                        )
-                                      : const Padding(
-                                          padding: EdgeInsets.all(16),
-                                          child: Text(
-                                            "Aún no hay comentarios",
-                                            style: TextStyle(fontSize: 17),
-                                          ),
-                                        ),
-                                );
+                          return const Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text("Error al cargar los comentarios"),
+                            ),
+                          );
                         } else {
                           return Consumer<Comentarios>(
                             builder: (ctx, comentarios, _) =>

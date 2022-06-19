@@ -7,9 +7,10 @@ import '../screens/noticia_detalle.dart';
 class NoticiaItem extends StatelessWidget {
   final Noticia noticia;
 
-  NoticiaItem({
+  const NoticiaItem({
+    Key? key,
     required this.noticia,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,9 +25,9 @@ class NoticiaItem extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              decoration: const BoxDecoration(
-                color: Colors.grey,
-                borderRadius: BorderRadius.all(Radius.circular(15)),
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: const BorderRadius.all(Radius.circular(15)),
               ),
               height: 80,
               width: 80,

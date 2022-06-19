@@ -5,6 +5,8 @@ import '../providers/noticias.dart';
 import '../widgets/noticia_item.dart';
 
 class NoticiasPage extends StatefulWidget {
+  const NoticiasPage({Key? key}) : super(key: key);
+
   @override
   State<NoticiasPage> createState() => _NoticiasPageState();
 }
@@ -72,10 +74,10 @@ class _NoticiasPageState extends State<NoticiasPage> {
                           Provider.of<Noticias>(context, listen: false)
                               .fetchAndSetNoticias(),
                       child: Consumer<Noticias>(
-                        builder: (ctx, noticias, _) => ListView.builder(
+                        builder: (context, noticias, _) => ListView.builder(
                           itemCount: noticias.items.length,
-                          itemBuilder: (ctx, i) => NoticiaItem(
-                            noticia: noticias.items[i],
+                          itemBuilder: (context, index) => NoticiaItem(
+                            noticia: noticias.items[index],
                           ),
                         ),
                       ),

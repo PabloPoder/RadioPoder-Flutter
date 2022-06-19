@@ -57,6 +57,8 @@ class _PerfilPageState extends State<PerfilPage> {
     } catch (e) {
       _showErrorDialog(e.toString());
     }
+
+    _formKey.currentState!.reset();
   }
 
   _showEditModal(context) {
@@ -175,7 +177,6 @@ class _PerfilPageState extends State<PerfilPage> {
           //
           // Mostrar el ultimo dato guardado en usuaurio en caso de que la api no este funcionando?
           // Es bueno para la optimizacion de la app?
-
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -196,7 +197,7 @@ class _PerfilPageState extends State<PerfilPage> {
         } else {
           return Consumer<Auth>(
             builder: (ctx, auth, _) => Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(8),
               child: Center(
                 child: SingleChildScrollView(
                   child: Column(
