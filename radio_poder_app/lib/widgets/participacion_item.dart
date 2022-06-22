@@ -1,26 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:radio_poder_app/models/participacion.dart';
+import 'package:radio_poder_app/models/sorteo.dart';
 import 'package:radio_poder_app/screens/sorteo_detalle.dart';
 
 class ParticipacionItem extends StatelessWidget {
   final Participacion participacion;
-  const ParticipacionItem({
+  ParticipacionItem({
     Key? key,
     required this.participacion,
   }) : super(key: key);
 
   // final bool isActive = true;
 
+  String _ganador() {
+    if (participacion.sorteo.ganadorId != null &&
+        participacion.sorteo.ganadorId == participacion.usuarioId) {
+      return 'Ganaste!';
+    } else if (participacion.sorteo.ganadorId == null) {
+      return 'Finaliza en ' +
+          participacion.sorteo.fechaFin
+              .difference(DateTime.now())
+              .inDays
+              .toString() +
+          ' días!';
+    }
+    return 'No ganaste :(';
+  }
+
   @override
   Widget build(BuildContext context) {
-    var diasRestantes =
-        participacion.sorteo.fechaFin.difference(DateTime.now()).inDays;
-
     return GestureDetector(
       onTap: () {
         Navigator.of(context)
-            .pushNamed(SorteoDetalle.route, arguments: participacion.sorteoId);
+            .pushNamed(SorteoDetalle.route, arguments: participacion.sorteo.id);
       },
       child: Container(
         padding: const EdgeInsets.all(8),
@@ -63,9 +76,7 @@ class ParticipacionItem extends StatelessWidget {
                           fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                     Text(
-                      diasRestantes == 0
-                          ? '¡Ya terminó!'
-                          : 'Finaliza en $diasRestantes días!',
+                      _ganador(),
                       style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 12,

@@ -104,6 +104,7 @@ class Participaciones with ChangeNotifier {
               foto: "https://192.168.1.106:45455/" +
                   participacion["sorteo"]["foto"],
               estado: participacion["sorteo"]["estado"],
+              ganadorId: participacion["sorteo"]["ganadorId"],
             )));
       }
       _items = participacionesCargadas;

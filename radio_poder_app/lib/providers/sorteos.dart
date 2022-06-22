@@ -20,7 +20,7 @@ class Sorteos with ChangeNotifier {
   }
 
   Sorteo fetchById(int id) {
-    return _items.firstWhere((noticia) => noticia.id == id);
+    return _items.firstWhere((sorteo) => sorteo.id == id);
   }
 
   Future<void> fetchAndSetSorteos() async {
@@ -45,10 +45,12 @@ class Sorteos with ChangeNotifier {
             fechaInicio: DateTime.parse(sorteo["fechaInicio"]),
             fechaFin: DateTime.parse(sorteo["fechaFin"]),
             foto: "https://192.168.1.106:45455/" + sorteo["foto"],
-            estado: sorteo["estado"]));
+            estado: sorteo["estado"],
+            ganadorId: sorteo["ganadorId"]));
       }
 
       _items = sorteosCargados.reversed.toList();
+
       notifyListeners();
     } catch (e) {
       throw Exception(e.toString());

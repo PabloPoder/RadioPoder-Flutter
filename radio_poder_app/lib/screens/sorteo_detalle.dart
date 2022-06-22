@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:radio_poder_app/models/participacion.dart';
+import 'package:radio_poder_app/models/usuario.dart';
 
+import '../providers/auth.dart';
 import '../providers/participaciones.dart';
 import '../providers/sorteos.dart';
 
@@ -34,6 +36,7 @@ class _SorteoDetalleState extends State<SorteoDetalle> {
     final id = ModalRoute.of(context)?.settings.arguments as int;
     final sorteo = Provider.of<Sorteos>(context, listen: false).fetchById(id);
     var diasRestantes = sorteo.fechaFin.difference(DateTime.now()).inDays;
+    final usuarioId = Provider.of<Auth>(context, listen: false).usuario!.id;
 
     Future<void> _participar() async {
       try {
@@ -151,9 +154,13 @@ class _SorteoDetalleState extends State<SorteoDetalle> {
                                 borderRadius: BorderRadius.circular(20),
                                 color: Colors.pinkAccent,
                               ),
-                              child: const Text(
-                                'Ya estas participando!',
-                                style: TextStyle(
+                              child: Text(
+                                sorteo.ganadorId == null
+                                    ? 'Ya estas participando!'
+                                    : sorteo.ganadorId == usuarioId
+                                        ? 'Felicidades, ganaste!'
+                                        : 'Lo sentimos, perdiste!',
+                                style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 17,
                                   fontWeight: FontWeight.bold,

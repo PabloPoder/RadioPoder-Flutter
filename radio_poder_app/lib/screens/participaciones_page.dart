@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:radio_poder_app/models/sorteo.dart';
 
 import '../providers/participaciones.dart';
+import '../providers/sorteos.dart';
 import '../widgets/participacion_item.dart';
 
 class ParticipacionesPage extends StatefulWidget {
@@ -13,15 +15,9 @@ class ParticipacionesPage extends StatefulWidget {
 
 class _ParticipacionesPageState extends State<ParticipacionesPage> {
   Future? _participacionesFuture;
-  bool _ordenDeLista = false;
-
-  _cambiarOrdenDeLista() {
-    setState(() {
-      _ordenDeLista = !_ordenDeLista;
-    });
-  }
 
   Future _obtenerParticipacionesFuture() {
+    Provider.of<Sorteos>(context, listen: false).fetchAndSetSorteos();
     return Provider.of<Participaciones>(context, listen: false)
         .fetchAndSetParticipaciones();
   }

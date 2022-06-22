@@ -6,6 +6,7 @@ class Sorteo {
   final DateTime fechaFin;
   final String foto;
   final bool estado;
+  final int? ganadorId;
 
   Sorteo({
     required this.id,
@@ -15,5 +16,6 @@ class Sorteo {
     required this.fechaFin,
     required this.foto,
     required this.estado,
+    this.ganadorId,
   });
 }
