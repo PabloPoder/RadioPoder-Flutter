@@ -1,19 +1,55 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:radio_poder_app/models/participacion.dart';
 
+import '../providers/participaciones.dart';
 import '../providers/sorteos.dart';
 
-class SorteoDetalle extends StatelessWidget {
+class SorteoDetalle extends StatefulWidget {
   static const route = "/sorteo_detalle";
 
   const SorteoDetalle({Key? key}) : super(key: key);
+
+  @override
+  State<SorteoDetalle> createState() => _SorteoDetalleState();
+}
+
+class _SorteoDetalleState extends State<SorteoDetalle> {
+  Future? _participacionFuture;
+
+  Future _obtenerParticipacionFuture() {
+    return Provider.of<Participaciones>(context, listen: false)
+        .fetchAndSetParticipaciones();
+  }
+
+  @override
+  void initState() {
+    _participacionFuture = _obtenerParticipacionFuture();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     final id = ModalRoute.of(context)?.settings.arguments as int;
     final sorteo = Provider.of<Sorteos>(context, listen: false).fetchById(id);
     var diasRestantes = sorteo.fechaFin.difference(DateTime.now()).inDays;
+
+    Future<void> _participar() async {
+      try {
+        await Provider.of<Participaciones>(context, listen: false)
+            .addParticipacion(id);
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.toString()),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
+    }
+
+    // TODO: ERROR AL REDIBUJAR EL WIDGET
 
     return Scaffold(
       backgroundColor: Colors.grey[200],
@@ -57,7 +93,7 @@ class SorteoDetalle extends StatelessWidget {
               child: Text(
                 diasRestantes == 0
                     ? '¡Ya terminó!'
-                    : 'Faltan ${diasRestantes} días para que finalice!',
+                    : 'Faltan $diasRestantes días para que finalice!',
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                     fontSize: 17,
@@ -75,23 +111,57 @@ class SorteoDetalle extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 16),
-            RaisedButton(
-              color: Colors.pinkAccent,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: const Text('Participar',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18)),
-              onPressed: () {
-                // TODO: Crear participacion con Id del sorteo y Id del usuario
+            const SizedBox(height: 16),
+            FutureBuilder(
+              future: _participacionFuture,
+              builder: (ctx, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (snapshot.error != null) {
+                  return const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text("Error al cargar participacion"),
+                    ),
+                  );
+                }
+
+                return Consumer<Participaciones>(
+                  builder: (ctx, participaciones, _) =>
+                      participaciones.fetchBySorteoId(id) == false
+                          ? RaisedButton(
+                              onPressed: _participar,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: const Text(
+                                'Participar!',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              color: Colors.orangeAccent,
+                            )
+                          : Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: Colors.pinkAccent,
+                              ),
+                              child: const Text(
+                                'Ya estas participando!',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                );
               },
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 30.0, vertical: 8.0),
-              textColor: Colors.white,
             ),
           ],
         ),

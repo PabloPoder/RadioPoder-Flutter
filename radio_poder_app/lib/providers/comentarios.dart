@@ -76,6 +76,10 @@ class Comentarios with ChangeNotifier {
             "noticiaId": noticiaId,
           }));
 
+      if (response.statusCode == 400) {
+        throw Exception("No se pudo agregar el comentario");
+      }
+
       _items.add(Comentario(
         id: json.decode(response.body)["id"],
         texto: texto,

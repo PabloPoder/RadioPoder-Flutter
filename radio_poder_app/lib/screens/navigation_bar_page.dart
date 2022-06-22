@@ -1,16 +1,17 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:radio_poder_app/providers/auth.dart';
+
+// Pages
 import 'package:radio_poder_app/screens/sorteos_page.dart';
 import 'package:radio_poder_app/screens/home_page.dart';
 import 'package:radio_poder_app/screens/noticias_page.dart';
 import 'package:radio_poder_app/screens/perfil_page.dart';
+import 'package:radio_poder_app/screens/participaciones_page.dart';
 
 class NavigationBarPage extends StatefulWidget {
   const NavigationBarPage({Key? key}) : super(key: key);
-  static const route = "navigation_bar_page";
+  static const route = "/navigation_bar_page";
 
   @override
   State<NavigationBarPage> createState() => _NavigationBarPageState();
@@ -23,55 +24,15 @@ class _NavigationBarPageState extends State<NavigationBarPage> {
     const HomePage(),
     const NoticiasPage(),
     const SorteosPage(),
+    const ParticipacionesPage(),
     const PerfilPage(),
   ];
-
-  _showDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text("Cerrar sesión"),
-        content: const Text("¿Estás seguro de cerrar sesión?"),
-        actions: <Widget>[
-          FlatButton(
-            child: const Text("Cancelar"),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          FlatButton(
-            child: const Text(
-              "Cerrar sesión",
-              style: TextStyle(color: Colors.red),
-            ),
-            onPressed: () {
-              Navigator.of(context).pop();
-              Navigator.of(context).pushReplacementNamed('/');
-              Provider.of<Auth>(context, listen: false).logout();
-            },
-          ),
-        ],
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[200],
-      appBar: AppBar(
-        title: const Text(
-          'R A D I O   P O D E R',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.exit_to_app),
-            onPressed: _showDialog,
-          ),
-        ],
-        centerTitle: true,
-        backgroundColor: Colors.white,
-        elevation: 0.5,
-      ),
+
       // IndexedStack(index: _currentIndex, children: _screens),
       // To keep all the pages alive in the widget tree
       body: _pages[_currentIndex],
@@ -97,6 +58,10 @@ class _NavigationBarPageState extends State<NavigationBarPage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.attractions_outlined),
+            label: '',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.local_activity),
             label: '',
           ),
           BottomNavigationBarItem(

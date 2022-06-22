@@ -31,6 +31,25 @@ class _NoticiasPageState extends State<NoticiasPage> {
   //   super.didChangeDependencies();
   // }
 
+  Future? _noticiasFuture;
+  bool _ordenDeLista = false;
+
+  _cambiarOrdenDeLista() {
+    setState(() {
+      _ordenDeLista = !_ordenDeLista;
+    });
+  }
+
+  Future _obtenerNoticiasFuture() {
+    return Provider.of<Noticias>(context, listen: false).fetchAndSetNoticias();
+  }
+
+  @override
+  void initState() {
+    _noticiasFuture = _obtenerNoticiasFuture();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     // Usar Consumer para no entrar en bucle infinito (infinito de carga de noticias)
@@ -38,65 +57,108 @@ class _NoticiasPageState extends State<NoticiasPage> {
     // final noticiasData = Provider.of<Noticias>(context);
     // final noticias = noticiasData.items;
 
-    return FutureBuilder(
-        future:
-            Provider.of<Noticias>(context, listen: false).fetchAndSetNoticias(),
-        builder: (ctx, dataSnapshot) {
-          if (dataSnapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else {
-            if (dataSnapshot.error != null) {
-              var noticias =
-                  Provider.of<Noticias>(context, listen: false).items;
+    return Scaffold(
+      backgroundColor: Colors.grey[200],
+      appBar: AppBar(
+        title: const Text(
+          'N O T I C I A S',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        elevation: 0.5,
+      ),
+      body: FutureBuilder(
+          future: _noticiasFuture,
+          builder: (ctx, dataSnapshot) {
+            if (dataSnapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else {
+              if (dataSnapshot.error != null) {
+                var noticias =
+                    Provider.of<Noticias>(context, listen: false).items;
 
-              return noticias.isEmpty
-                  ? Center(
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Text(
-                              'Ups! Ha ocurrido un error.',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  fontSize: 22, fontWeight: FontWeight.bold),
+                return noticias.isEmpty
+                    ? Center(
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Text(
+                                'Ups! Ha ocurrido un error.',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 22, fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                'Vuelve a intertarlo más tarde.',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 14),
+                              ),
+                            ]),
+                      )
+                    : RefreshIndicator(
+                        //TODO: Revisar el consumo para ver si se puede usar.
+                        //Si no, retornar solo el ListView.Builder
+                        //TODO: Agregar barra de filtros para buscar por noticia mas antigua
+                        onRefresh: _obtenerNoticiasFuture,
+                        child: Consumer<Noticias>(
+                          builder: (context, noticias, _) => ListView.builder(
+                            itemCount: noticias.items.length,
+                            itemBuilder: (context, index) => NoticiaItem(
+                              noticia: noticias.items[index],
                             ),
-                            Text(
-                              'Vuelve a intertarlo más tarde.',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 14),
-                            ),
-                          ]),
-                    )
-                  : RefreshIndicator(
-                      //TODO: Revisar el consumo para ver si se puede usar.
-                      //Si no, retornar solo el ListView.Builder
-                      onRefresh: () =>
-                          Provider.of<Noticias>(context, listen: false)
-                              .fetchAndSetNoticias(),
-                      child: Consumer<Noticias>(
-                        builder: (context, noticias, _) => ListView.builder(
-                          itemCount: noticias.items.length,
-                          itemBuilder: (context, index) => NoticiaItem(
-                            noticia: noticias.items[index],
+                          ),
+                        ),
+                      );
+              } else {
+                return RefreshIndicator(
+                  onRefresh: _obtenerNoticiasFuture,
+                  child: Consumer<Noticias>(
+                    builder: (ctx, noticias, _) => Column(children: [
+                      Container(
+                        color: Colors.white,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text('Más antiguas:',
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold)),
+                              Row(
+                                children: [
+                                  Switch(
+                                    activeColor: Colors.orangeAccent,
+                                    value: _ordenDeLista,
+                                    onChanged: (_) {
+                                      setState(() {
+                                        _cambiarOrdenDeLista();
+                                      });
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                    );
-            } else {
-              return RefreshIndicator(
-                onRefresh: () => Provider.of<Noticias>(context, listen: false)
-                    .fetchAndSetNoticias(),
-                child: Consumer<Noticias>(
-                  builder: (ctx, noticias, _) => ListView.builder(
-                    itemCount: noticias.items.length,
-                    itemBuilder: (ctx, i) => NoticiaItem(
-                      noticia: noticias.items[i],
-                    ),
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: noticias.items.length,
+                          itemBuilder: (ctx, i) => NoticiaItem(
+                            noticia: _ordenDeLista == false
+                                ? noticias.items[i]
+                                : noticias.items.reversed.toList()[i],
+                          ),
+                        ),
+                      ),
+                    ]),
                   ),
-                ),
-              );
+                );
+              }
             }
-          }
-        });
+          }),
+    );
   }
 }

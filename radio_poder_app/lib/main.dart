@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:radio_poder_app/providers/auth.dart';
 import 'package:radio_poder_app/providers/comentarios.dart';
 import 'package:radio_poder_app/providers/noticias.dart';
+import 'package:radio_poder_app/providers/participaciones.dart';
 import 'package:radio_poder_app/screens/sorteo_detalle.dart';
 
 import 'providers/sorteos.dart';
@@ -41,12 +42,17 @@ class MyApp extends StatelessWidget {
               previousComentarios == null ? [] : previousComentarios.items),
         ),
         ChangeNotifierProxyProvider<Auth, Sorteos>(
-          create: (_) => Sorteos(
-            "",
-          ),
+          create: (_) => Sorteos("", []),
           update: (_, auth, previousSorteos) => Sorteos(
-            auth.token,
-          ),
+              auth.token, previousSorteos == null ? [] : previousSorteos.items),
+        ),
+        ChangeNotifierProxyProvider<Auth, Participaciones>(
+          create: (_) => Participaciones("", []),
+          update: (_, auth, previousParticipaciones) => Participaciones(
+              auth.token,
+              previousParticipaciones == null
+                  ? []
+                  : previousParticipaciones.items),
         ),
       ],
       child: Consumer<Auth>(

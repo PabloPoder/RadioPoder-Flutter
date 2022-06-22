@@ -162,110 +162,156 @@ class _PerfilPageState extends State<PerfilPage> {
     );
   }
 
+  _showDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Cerrar sesión"),
+        content: const Text("¿Estás seguro de cerrar sesión?"),
+        actions: <Widget>[
+          FlatButton(
+            child: const Text("Cancelar"),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          FlatButton(
+            child: const Text(
+              "Cerrar sesión",
+              style: TextStyle(color: Colors.red),
+            ),
+            onPressed: () {
+              Navigator.of(context).pop();
+              Navigator.of(context).pushReplacementNamed('/');
+              Provider.of<Auth>(context, listen: false).logout();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: Provider.of<Auth>(context, listen: false).usuarioLogeado(),
-      builder: (ctx, dataSnapshot) {
-        if (dataSnapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        if (dataSnapshot.error != null) {
-          //TODO:
-          // var usuario = Provider.of<Auth>(context, listen: false).usuario;
-          // return usuario == null ? : ;
-          //
-          // Mostrar el ultimo dato guardado en usuaurio en caso de que la api no este funcionando?
-          // Es bueno para la optimizacion de la app?
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Text(
-                  'Ups! Ha ocurrido un error.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  'Vuelve a intertarlo más tarde.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 14),
-                ),
-              ],
-            ),
-          );
-        } else {
-          return Consumer<Auth>(
-            builder: (ctx, auth, _) => Padding(
-              padding: const EdgeInsets.all(8),
-              child: Center(
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: double.infinity,
-                        child: Card(
-                          child: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                CircleAvatar(
-                                  radius: 30,
-                                  child: Text(
-                                    auth.usuario!.nombre.substring(0, 1) +
-                                        auth.usuario!.apellido.substring(0, 1),
+    return Scaffold(
+      backgroundColor: Colors.grey[200],
+      appBar: AppBar(
+        title: const Text(
+          'P E R F I L',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.exit_to_app),
+            onPressed: _showDialog,
+          ),
+        ],
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        elevation: 0.5,
+      ),
+      body: FutureBuilder(
+        future: Provider.of<Auth>(context, listen: false).usuarioLogeado(),
+        builder: (ctx, dataSnapshot) {
+          if (dataSnapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (dataSnapshot.error != null) {
+            //TODO:
+            // var usuario = Provider.of<Auth>(context, listen: false).usuario;
+            // return usuario == null ? : ;
+            //
+            // Mostrar el ultimo dato guardado en usuaurio en caso de que la api no este funcionando?
+            // Es bueno para la optimizacion de la app?
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Text(
+                    'Ups! Ha ocurrido un error.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    'Vuelve a intertarlo más tarde.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 14),
+                  ),
+                ],
+              ),
+            );
+          } else {
+            return Consumer<Auth>(
+              builder: (ctx, auth, _) => Padding(
+                padding: const EdgeInsets.all(8),
+                child: Center(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: double.infinity,
+                          child: Card(
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  CircleAvatar(
+                                    radius: 30,
+                                    child: Text(
+                                      auth.usuario!.nombre.substring(0, 1) +
+                                          auth.usuario!.apellido
+                                              .substring(0, 1),
+                                      style: const TextStyle(
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white),
+                                    ),
+                                    backgroundColor: Colors.pinkAccent,
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    auth.usuario!.nombre +
+                                        " " +
+                                        auth.usuario!.apellido,
                                     style: const TextStyle(
                                         fontSize: 24,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white),
+                                        fontWeight: FontWeight.bold),
                                   ),
-                                  backgroundColor: Colors.pinkAccent,
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  auth.usuario!.nombre +
-                                      " " +
-                                      auth.usuario!.apellido,
-                                  style: const TextStyle(
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                Text(auth.usuario!.email),
-                                const SizedBox(height: 16),
-                                RaisedButton(
-                                  color: Colors.orangeAccent,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20),
+                                  Text(auth.usuario!.email),
+                                  const SizedBox(height: 16),
+                                  RaisedButton(
+                                    color: Colors.orangeAccent,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: const Text('Editar Perfil'),
+                                    onPressed: () => _showEditModal(context),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 30.0, vertical: 8.0),
+                                    textColor: Colors.white,
                                   ),
-                                  child: const Text('Editar Perfil'),
-                                  onPressed: () => _showEditModal(context),
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 30.0, vertical: 8.0),
-                                  textColor: Colors.white,
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      const _MyCard(
-                          titulo: "Torneos Ganados:",
-                          data: 10,
-                          icon: Icons.stars_rounded),
-                      const _MyCard(
-                          titulo: "Participaciones activas:",
-                          data: 5,
-                          icon: Icons.view_list_rounded),
-                    ],
+                        const _MyCard(
+                            titulo: "Torneos Ganados:",
+                            data: 10,
+                            icon: Icons.stars_rounded),
+                        const _MyCard(
+                            titulo: "Participaciones activas:",
+                            data: 5,
+                            icon: Icons.view_list_rounded),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          );
-        }
-      },
+            );
+          }
+        },
+      ),
     );
   }
 }
