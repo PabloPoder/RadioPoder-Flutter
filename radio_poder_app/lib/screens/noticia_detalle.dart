@@ -19,7 +19,6 @@ class _NoticiaDetalleState extends State<NoticiaDetalle> {
   @override
   Widget build(BuildContext context) {
     final id = ModalRoute.of(context)?.settings.arguments as int;
-
     final noticia = Provider.of<Noticias>(context, listen: false).fetchById(id);
     // Provider.of<Comentarios>(context, listen: false).fetchAndSetComentarios(id);
 
@@ -69,9 +68,12 @@ class _NoticiaDetalleState extends State<NoticiaDetalle> {
                   children: <Widget>[
                     Container(
                       padding: const EdgeInsets.all(16),
-                      child: Image.network(
-                        noticia.foto,
-                        fit: BoxFit.cover,
+                      child: Hero(
+                        tag: noticia.id,
+                        child: Image.network(
+                          noticia.foto,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                     Container(

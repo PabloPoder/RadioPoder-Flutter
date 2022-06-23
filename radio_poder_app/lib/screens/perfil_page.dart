@@ -368,11 +368,13 @@ class _MyCard extends StatelessWidget {
               Icon(icon, size: 30, color: Colors.orangeAccent),
               Text(
                 titulo,
+                textAlign: TextAlign.center,
                 style:
                     const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               Text(
                 data.toString(),
+                textAlign: TextAlign.center,
                 style: const TextStyle(fontSize: 20),
               ),
             ],

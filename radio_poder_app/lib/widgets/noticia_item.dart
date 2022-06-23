@@ -33,17 +33,20 @@ class NoticiaItem extends StatelessWidget {
               width: 80,
               child: ClipRRect(
                 borderRadius: const BorderRadius.all(Radius.circular(15)),
-                child: Image.network(
-                  noticia.foto,
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return const Center(
-                        child: Icon(
-                      Icons.image,
-                      color: Colors.white,
-                    ));
-                  },
-                  fit: BoxFit.cover,
+                child: Hero(
+                  tag: noticia.id,
+                  child: Image.network(
+                    noticia.foto,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return const Center(
+                          child: Icon(
+                        Icons.image,
+                        color: Colors.white,
+                      ));
+                    },
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             ),

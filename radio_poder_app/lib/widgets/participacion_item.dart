@@ -46,17 +46,20 @@ class ParticipacionItem extends StatelessWidget {
               width: 80,
               child: ClipRRect(
                 borderRadius: const BorderRadius.all(Radius.circular(15)),
-                child: Image.network(
-                  participacion.sorteo.foto,
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return const Center(
-                        child: Icon(
-                      Icons.image,
-                      color: Colors.white,
-                    ));
-                  },
-                  fit: BoxFit.cover,
+                child: Hero(
+                  tag: participacion.sorteo.id,
+                  child: Image.network(
+                    participacion.sorteo.foto,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return const Center(
+                          child: Icon(
+                        Icons.image,
+                        color: Colors.white,
+                      ));
+                    },
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             ),

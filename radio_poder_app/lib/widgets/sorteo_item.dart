@@ -30,17 +30,20 @@ class SorteoItem extends StatelessWidget {
                     width: double.infinity,
                     child: ClipRRect(
                       borderRadius: const BorderRadius.all(Radius.circular(5)),
-                      child: Image.network(
-                        sorteo.foto,
-                        loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          return const Center(
-                              child: Icon(
-                            Icons.image,
-                            color: Colors.white,
-                          ));
-                        },
-                        fit: BoxFit.cover,
+                      child: Hero(
+                        tag: sorteo.id,
+                        child: Image.network(
+                          sorteo.foto,
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return const Center(
+                                child: Icon(
+                              Icons.image,
+                              color: Colors.white,
+                            ));
+                          },
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                   ),
