@@ -53,9 +53,9 @@ class Participaciones with ChangeNotifier {
 
       _items.add(Participacion(
         id: json.decode(response.body)["id"],
-        sorteoId: json.decode(response.body)["sorteoId"],
-        usuarioId: json.decode(response.body)["usuarioId"],
         fecha: DateTime.parse(json.decode(response.body)["fecha"]),
+        usuarioId: json.decode(response.body)["usuarioId"],
+        sorteoId: json.decode(response.body)["sorteoId"],
         sorteo: Sorteo(
           id: json.decode(response.body)["sorteo"]["id"],
           titulo: json.decode(response.body)["sorteo"]["titulo"],
@@ -66,7 +66,6 @@ class Participaciones with ChangeNotifier {
               DateTime.parse(json.decode(response.body)["sorteo"]["fechaFin"]),
           foto: "https://192.168.1.106:45455/" +
               json.decode(response.body)["sorteo"]["foto"],
-          estado: json.decode(response.body)["sorteo"]["estado"],
         ),
       ));
     } catch (e) {
@@ -103,7 +102,6 @@ class Participaciones with ChangeNotifier {
               fechaFin: DateTime.parse(participacion["sorteo"]["fechaFin"]),
               foto: "https://192.168.1.106:45455/" +
                   participacion["sorteo"]["foto"],
-              estado: participacion["sorteo"]["estado"],
               ganadorId: participacion["sorteo"]["ganadorId"],
             )));
       }

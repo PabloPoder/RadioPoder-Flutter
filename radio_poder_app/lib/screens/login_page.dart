@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../providers/auth.dart';
 
-enum AuthMode { Signup, Login }
+enum AuthMode { signup, login }
 
 class LoginPage extends StatelessWidget {
   static const route = '/login_page';
@@ -67,17 +67,12 @@ class AuthCard extends StatefulWidget {
 
 class _AuthCardState extends State<AuthCard> {
   final GlobalKey<FormState> _formKey = GlobalKey();
-  AuthMode _authMode = AuthMode.Login;
+  AuthMode _authMode = AuthMode.login;
   final Map<String, String> _authData = {
     'email': '',
     'password': '',
-  };
-
-  final Map<String, String> _authDataRegister = {
     'nombre': '',
     'apellido': '',
-    'email': '',
-    'password': '',
   };
 
   var _isLoading = false;
@@ -90,7 +85,7 @@ class _AuthCardState extends State<AuthCard> {
               title: const Text('Ha ocurrido un error!'),
               content: Text(message),
               actions: <Widget>[
-                FlatButton(
+                TextButton(
                   child: const Text('Ok'),
                   onPressed: () {
                     Navigator.of(ctx).pop();
@@ -112,18 +107,34 @@ class _AuthCardState extends State<AuthCard> {
     });
 
     try {
-      if (_authMode == AuthMode.Login) {
+      if (_authMode == AuthMode.login) {
         await Provider.of<Auth>(context, listen: false).login(
           _authData['email']!,
           _authData['password']!,
         );
       } else {
-        await Provider.of<Auth>(context, listen: false).register(
-          _authData['nombre']!,
-          _authData['apellido']!,
-          _authData['email']!,
-          _authData['password']!,
-        );
+        try {
+          await Provider.of<Auth>(context, listen: false).register(
+            _authData['nombre']!,
+            _authData['apellido']!,
+            _authData['email']!,
+            _authData['password']!,
+          );
+          _authMode = AuthMode.login;
+          showDialog(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                    title: const Text('Usuario creado con exito!'),
+                    actions: <Widget>[
+                      TextButton(
+                        child: const Text('Ok'),
+                        onPressed: () {
+                          Navigator.of(ctx).pop();
+                        },
+                      )
+                    ],
+                  ));
+        } catch (e) {}
       }
     } catch (error) {
       var errorMessage = error.toString();
@@ -136,13 +147,13 @@ class _AuthCardState extends State<AuthCard> {
   }
 
   void _switchAuthMode() {
-    if (_authMode == AuthMode.Login) {
+    if (_authMode == AuthMode.login) {
       setState(() {
-        _authMode = AuthMode.Signup;
+        _authMode = AuthMode.signup;
       });
     } else {
       setState(() {
-        _authMode = AuthMode.Login;
+        _authMode = AuthMode.login;
       });
     }
   }
@@ -151,9 +162,9 @@ class _AuthCardState extends State<AuthCard> {
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
     return Container(
-      height: _authMode == AuthMode.Signup ? 400 : 320,
+      height: _authMode == AuthMode.signup ? 400 : 320,
       constraints:
-          BoxConstraints(minHeight: _authMode == AuthMode.Signup ? 400 : 320),
+          BoxConstraints(minHeight: _authMode == AuthMode.signup ? 400 : 320),
       width: deviceSize.width * 0.85,
       padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
       child: Form(
@@ -211,6 +222,7 @@ class _AuthCardState extends State<AuthCard> {
                     if (value!.isEmpty || value.length < 4) {
                       return 'La contraseña es demasiado corta!';
                     }
+                    return null;
                   },
                   onSaved: (value) {
                     _authData['password'] = value!;
@@ -218,7 +230,7 @@ class _AuthCardState extends State<AuthCard> {
                 ),
               ),
               const SizedBox(height: 20),
-              if (_authMode == AuthMode.Signup)
+              if (_authMode == AuthMode.signup)
                 Column(
                   children: [
                     Container(
@@ -232,18 +244,19 @@ class _AuthCardState extends State<AuthCard> {
                       ),
                       child: TextFormField(
                         textInputAction: TextInputAction.next,
-                        enabled: _authMode == AuthMode.Signup,
+                        enabled: _authMode == AuthMode.signup,
                         decoration: const InputDecoration(
                           border: InputBorder.none,
                           prefixIcon: Icon(Icons.password),
                           hintText: "Confirmar Contraseña",
                         ),
                         obscureText: true,
-                        validator: _authMode == AuthMode.Signup
+                        validator: _authMode == AuthMode.signup
                             ? (value) {
                                 if (value != _passwordController.text) {
                                   return 'Las contraseñas no coinciden!';
                                 }
+                                return null;
                               }
                             : null,
                       ),
@@ -261,7 +274,7 @@ class _AuthCardState extends State<AuthCard> {
                       child: TextFormField(
                         textInputAction: TextInputAction.next,
                         textCapitalization: TextCapitalization.words,
-                        enabled: _authMode == AuthMode.Signup,
+                        enabled: _authMode == AuthMode.signup,
                         decoration: const InputDecoration(
                           border: InputBorder.none,
                           prefixIcon: Icon(Icons.person),
@@ -291,7 +304,7 @@ class _AuthCardState extends State<AuthCard> {
                       child: TextFormField(
                         textInputAction: TextInputAction.next,
                         textCapitalization: TextCapitalization.words,
-                        enabled: _authMode == AuthMode.Signup,
+                        enabled: _authMode == AuthMode.signup,
                         decoration: const InputDecoration(
                           border: InputBorder.none,
                           prefixIcon: Icon(Icons.person),
@@ -320,16 +333,16 @@ class _AuthCardState extends State<AuthCard> {
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
-                      _authMode == AuthMode.Login ? 'Ingresar' : 'Registrarse'),
+                      _authMode == AuthMode.login ? 'Ingresar' : 'Registrarse'),
                   onPressed: _submit,
                   padding: const EdgeInsets.symmetric(
                       horizontal: 30.0, vertical: 8.0),
                   textColor: Colors.white,
                 ),
-              SizedBox(height: 5),
+              const SizedBox(height: 5),
               FlatButton(
                 child: Text(
-                  _authMode == AuthMode.Login
+                  _authMode == AuthMode.login
                       ? 'No tienes cuenta? Crea una ahora!'
                       : 'Ingresar con tu cuenta!',
                   textAlign: TextAlign.center,

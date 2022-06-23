@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:radio_poder_app/providers/auth.dart';
+import 'package:radio_poder_app/providers/sorteos.dart';
+
+import '../providers/participaciones.dart';
 
 class PerfilPage extends StatefulWidget {
   const PerfilPage({Key? key}) : super(key: key);
@@ -189,6 +192,21 @@ class _PerfilPageState extends State<PerfilPage> {
     );
   }
 
+  Future? _usuarioFuture;
+
+  Future _obtenerUsuarioFuture() {
+    Provider.of<Sorteos>(context, listen: false).fetchAndSetSorteos();
+    Provider.of<Participaciones>(context, listen: false)
+        .fetchAndSetParticipaciones();
+    return Provider.of<Auth>(context, listen: false).usuarioLogeado();
+  }
+
+  @override
+  void initState() {
+    _usuarioFuture = _obtenerUsuarioFuture();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -209,13 +227,12 @@ class _PerfilPageState extends State<PerfilPage> {
         elevation: 0.5,
       ),
       body: FutureBuilder(
-        future: Provider.of<Auth>(context, listen: false).usuarioLogeado(),
+        future: _usuarioFuture,
         builder: (ctx, dataSnapshot) {
           if (dataSnapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
           if (dataSnapshot.error != null) {
-            //TODO:
             // var usuario = Provider.of<Auth>(context, listen: false).usuario;
             // return usuario == null ? : ;
             //
@@ -295,14 +312,27 @@ class _PerfilPageState extends State<PerfilPage> {
                             ),
                           ),
                         ),
-                        const _MyCard(
-                            titulo: "Torneos Ganados:",
-                            data: 10,
-                            icon: Icons.stars_rounded),
-                        const _MyCard(
-                            titulo: "Participaciones activas:",
-                            data: 5,
-                            icon: Icons.view_list_rounded),
+                        Consumer<Sorteos>(
+                          builder: (context, sorteos, child) => _MyCard(
+                              titulo: "Sorteos Ganados:",
+                              data: sorteos
+                                      .sorteosGanados(auth.usuario!.id)
+                                      .isEmpty
+                                  ? "Aun no has ganado en ningún sorteo."
+                                  : sorteos
+                                      .sorteosGanados(auth.usuario!.id)
+                                      .length
+                                      .toString(),
+                              icon: Icons.stars_rounded),
+                        ),
+                        Consumer<Participaciones>(
+                          builder: (context, participaciones, child) => _MyCard(
+                              titulo: "Participaciones:",
+                              data: participaciones.items.isEmpty
+                                  ? "No has participado en ningún sorteo"
+                                  : participaciones.items.length.toString(),
+                              icon: Icons.stars_rounded),
+                        ),
                       ],
                     ),
                   ),
@@ -318,7 +348,7 @@ class _PerfilPageState extends State<PerfilPage> {
 
 class _MyCard extends StatelessWidget {
   final String titulo;
-  final int data;
+  final String data;
   final IconData icon;
 
   const _MyCard(

@@ -38,11 +38,11 @@ class Auth with ChangeNotifier {
 
   Future<void> register(
       String nombre, String apellido, String email, String password) async {
-    const url = "https://192.168.1.106:45455/api/Usuarios/Register.json";
+    const url = "https://192.168.1.106:45455/api/Usuarios/Register";
 
     try {
       final response = await http.post(Uri.parse(url),
-          // headers: headers,
+          headers: headers,
           body: json.encode({
             'nombre': nombre,
             'apellido': apellido,

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:radio_poder_app/models/participacion.dart';
-import 'package:radio_poder_app/models/usuario.dart';
 
 import '../providers/auth.dart';
 import '../providers/participaciones.dart';
@@ -42,17 +40,29 @@ class _SorteoDetalleState extends State<SorteoDetalle> {
       try {
         await Provider.of<Participaciones>(context, listen: false)
             .addParticipacion(id);
+
+        setState(() {
+          _participacionFuture = _obtenerParticipacionFuture();
+        });
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(e.toString()),
-            duration: const Duration(seconds: 2),
+        showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: const Text('Ha ocurrido un error!'),
+            content: const Text(
+                "Ha ocurrido un error al participar en el sorteo. Por favor, inténtelo mas tarde."),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Ok'),
+                onPressed: () {
+                  Navigator.of(ctx).pop();
+                },
+              )
+            ],
           ),
         );
       }
     }
-
-    // TODO: ERROR AL REDIBUJAR EL WIDGET
 
     return Scaffold(
       backgroundColor: Colors.grey[200],
@@ -94,7 +104,7 @@ class _SorteoDetalleState extends State<SorteoDetalle> {
             Container(
               padding: const EdgeInsets.all(16),
               child: Text(
-                diasRestantes == 0
+                diasRestantes == 0 || sorteo.ganadorId != null
                     ? '¡Ya terminó!'
                     : 'Faltan $diasRestantes días para que finalice!',
                 textAlign: TextAlign.center,
@@ -132,7 +142,9 @@ class _SorteoDetalleState extends State<SorteoDetalle> {
 
                 return Consumer<Participaciones>(
                   builder: (ctx, participaciones, _) =>
-                      participaciones.fetchBySorteoId(id) == false
+                      participaciones.fetchBySorteoId(id) == false &&
+                              sorteo.ganadorId == null &&
+                              diasRestantes > 0
                           ? RaisedButton(
                               onPressed: _participar,
                               shape: RoundedRectangleBorder(
@@ -152,14 +164,16 @@ class _SorteoDetalleState extends State<SorteoDetalle> {
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20),
-                                color: Colors.pinkAccent,
+                                color: sorteo.ganadorId == usuarioId
+                                    ? Colors.orangeAccent
+                                    : Colors.pinkAccent,
                               ),
                               child: Text(
                                 sorteo.ganadorId == null
                                     ? 'Ya estas participando!'
                                     : sorteo.ganadorId == usuarioId
                                         ? 'Felicidades, ganaste!'
-                                        : 'Lo sentimos, perdiste!',
+                                        : 'Sorteo finalizado!',
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 17,

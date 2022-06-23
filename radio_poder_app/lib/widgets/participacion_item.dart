@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:radio_poder_app/models/participacion.dart';
-import 'package:radio_poder_app/models/sorteo.dart';
 import 'package:radio_poder_app/screens/sorteo_detalle.dart';
 
 class ParticipacionItem extends StatelessWidget {
   final Participacion participacion;
-  ParticipacionItem({
+  const ParticipacionItem({
     Key? key,
     required this.participacion,
   }) : super(key: key);
-
-  // final bool isActive = true;
 
   String _ganador() {
     if (participacion.sorteo.ganadorId != null &&

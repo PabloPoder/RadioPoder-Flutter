@@ -56,9 +56,14 @@ class SorteoItem extends StatelessWidget {
                     const TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
               ),
               Text(
-                "Finaliza: " + DateFormat.yMd().format(sorteo.fechaFin),
+                sorteo.ganadorId != null
+                    ? "Finalizado"
+                    : "Finaliza: " + DateFormat.yMd().format(sorteo.fechaFin),
                 textAlign: TextAlign.start,
-                style: const TextStyle(color: Colors.grey),
+                style: TextStyle(
+                    color: sorteo.ganadorId != null
+                        ? Colors.orangeAccent
+                        : Colors.grey),
               ),
             ],
           ),

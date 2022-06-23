@@ -23,6 +23,10 @@ class Sorteos with ChangeNotifier {
     return _items.firstWhere((sorteo) => sorteo.id == id);
   }
 
+  List<Sorteo> sorteosGanados(int id) {
+    return _items.where((element) => element.ganadorId == id).toList();
+  }
+
   Future<void> fetchAndSetSorteos() async {
     const url = 'https://192.168.1.106:45455/api/Sorteos/GetAll';
 
@@ -45,7 +49,6 @@ class Sorteos with ChangeNotifier {
             fechaInicio: DateTime.parse(sorteo["fechaInicio"]),
             fechaFin: DateTime.parse(sorteo["fechaFin"]),
             foto: "https://192.168.1.106:45455/" + sorteo["foto"],
-            estado: sorteo["estado"],
             ganadorId: sorteo["ganadorId"]));
       }
 

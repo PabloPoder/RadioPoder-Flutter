@@ -75,41 +75,23 @@ class _NoticiasPageState extends State<NoticiasPage> {
               return const Center(child: CircularProgressIndicator());
             } else {
               if (dataSnapshot.error != null) {
-                var noticias =
-                    Provider.of<Noticias>(context, listen: false).items;
-
-                return noticias.isEmpty
-                    ? Center(
-                        child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
-                              Text(
-                                'Ups! Ha ocurrido un error.',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: 22, fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                'Vuelve a intertarlo más tarde.',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 14),
-                              ),
-                            ]),
-                      )
-                    : RefreshIndicator(
-                        //TODO: Revisar el consumo para ver si se puede usar.
-                        //Si no, retornar solo el ListView.Builder
-                        //TODO: Agregar barra de filtros para buscar por noticia mas antigua
-                        onRefresh: _obtenerNoticiasFuture,
-                        child: Consumer<Noticias>(
-                          builder: (context, noticias, _) => ListView.builder(
-                            itemCount: noticias.items.length,
-                            itemBuilder: (context, index) => NoticiaItem(
-                              noticia: noticias.items[index],
-                            ),
-                          ),
+                return Center(
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Text(
+                          'Ups! Ha ocurrido un error.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 22, fontWeight: FontWeight.bold),
                         ),
-                      );
+                        Text(
+                          'Vuelve a intertarlo más tarde.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 14),
+                        ),
+                      ]),
+                );
               } else {
                 return RefreshIndicator(
                   onRefresh: _obtenerNoticiasFuture,

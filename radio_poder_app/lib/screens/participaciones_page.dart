@@ -73,7 +73,7 @@ class _ParticipacionesPageState extends State<ParticipacionesPage> {
                   onRefresh: _obtenerParticipacionesFuture,
                   child: Consumer<Participaciones>(
                       builder: (context, participacionesData, _) {
-                    return participaciones.length <= 0
+                    return participaciones.isEmpty
                         ? Center(
                             child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
