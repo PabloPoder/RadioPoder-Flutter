@@ -20,6 +20,8 @@ dependencies:
   timeago: ^3.2.2
   shared_preferences: ^2.0.15
   confetti: 
+  smooth_page_indicator:
+  lottie:
 
 
 dev_dependencies:

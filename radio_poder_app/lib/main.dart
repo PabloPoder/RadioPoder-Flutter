@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:radio_poder_app/providers/auth.dart';
@@ -7,22 +6,31 @@ import 'package:radio_poder_app/providers/comentarios.dart';
 import 'package:radio_poder_app/providers/noticias.dart';
 import 'package:radio_poder_app/providers/participaciones.dart';
 import 'package:radio_poder_app/screens/sorteo_detalle.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'providers/sorteos.dart';
+import 'screens/intruduccion_page.dart';
 import 'screens/login_page.dart';
 import 'screens/splash_screen.dart';
 import 'screens/navigation_bar_page.dart';
 import 'screens/noticia_detalle.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   // Permitir uso de api no certificada?
   HttpOverrides.global = MyHttpOverrides();
 
-  runApp(const MyApp());
+  // Inicializar preferencias para mostrar introduccion
+  final prefs = await SharedPreferences.getInstance();
+  final showIntro = prefs.getBool('showIntro') ?? false;
+
+  runApp(MyApp(showIntro: showIntro));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final bool showIntro;
+  const MyApp({Key? key, required this.showIntro}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +70,7 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             appBarTheme: const AppBarTheme(foregroundColor: Colors.black),
           ),
+          initialRoute: showIntro ? null : IntruduccionPage.route,
           home: auth.isAuthenticated
               ? const NavigationBarPage()
               : FutureBuilder(
@@ -73,6 +82,7 @@ class MyApp extends StatelessWidget {
                           : const LoginPage(),
                 ),
           routes: {
+            IntruduccionPage.route: (ctx) => const IntruduccionPage(),
             LoginPage.route: (context) => const LoginPage(),
             NavigationBarPage.route: (context) => const NavigationBarPage(),
             NoticiaDetalle.route: (context) => const NoticiaDetalle(),
