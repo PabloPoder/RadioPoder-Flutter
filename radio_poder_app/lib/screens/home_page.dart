@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,36 +53,23 @@ class HomePage extends StatelessWidget {
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 10),
                   Container(
+                    padding: const EdgeInsets.all(12),
                     decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(50)),
-                        color: Colors.pinkAccent),
-                    child: IconButton(
-                      onPressed: () {},
-                      icon: const Icon(
-                        Icons.play_arrow_rounded,
-                        color: Colors.white,
-                      ),
+                        gradient: LinearGradient(colors: [
+                          Colors.orangeAccent,
+                          Colors.pinkAccent,
+                        ]),
+                        borderRadius: BorderRadius.all(Radius.circular(32))),
+                    child: const Text(
+                      'Recuerda revisar los sorteos más recientes!',
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
                     ),
-                  ),
+                  )
                 ],
               ),
             ),
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: const BoxDecoration(
-                  gradient: LinearGradient(colors: [
-                    Colors.orangeAccent,
-                    Colors.pinkAccent,
-                  ]),
-                  borderRadius: BorderRadius.all(Radius.circular(32))),
-              child: const Text(
-                'Recuerda revisar los sorteos más recientes!',
-                style:
-                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-              ),
-            )
           ],
         ),
       ),

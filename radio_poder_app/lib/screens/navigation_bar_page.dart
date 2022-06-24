@@ -1,5 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
 // Pages
@@ -17,9 +18,12 @@ class NavigationBarPage extends StatefulWidget {
   State<NavigationBarPage> createState() => _NavigationBarPageState();
 }
 
-class _NavigationBarPageState extends State<NavigationBarPage> {
-  int _currentIndex = 0;
+class _NavigationBarPageState extends State<NavigationBarPage>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
 
+  // Bottom Navigation Bar
+  int _currentIndex = 0;
   final List<Widget> _pages = [
     const HomePage(),
     const NoticiasPage(),
@@ -27,6 +31,46 @@ class _NavigationBarPageState extends State<NavigationBarPage> {
     const ParticipacionesPage(),
     const PerfilPage(),
   ];
+
+  // Reproductor de audio
+  final audioPlayer = AudioPlayer();
+  bool isPlaying = false;
+
+  @override
+  void initState() {
+    // Controlador de animación
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+
+    setAudio();
+
+    // Escuchar eventos del reproductor de audio
+    audioPlayer.onPlayerStateChanged.listen((state) {
+      setState(() {
+        isPlaying = state == PlayerState.PLAYING;
+      });
+    });
+
+    super.initState();
+  }
+
+  Future<void> setAudio() async {
+    // Loop
+    audioPlayer.setReleaseMode(ReleaseMode.LOOP);
+    // Cargar audio
+    final player = AudioCache(prefix: 'assets/');
+    final url = await player.load('deadmans-wonderland.wav');
+    await audioPlayer.setUrl(url.path, isLocal: true);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    audioPlayer.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,13 +114,23 @@ class _NavigationBarPageState extends State<NavigationBarPage> {
           ),
         ],
       ),
-      floatingActionButton: _currentIndex != 0
-          ? FloatingActionButton(
-              onPressed: () {},
-              backgroundColor: Colors.pinkAccent,
-              child: const Icon(Icons.play_arrow_rounded),
-            )
-          : null,
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.pinkAccent,
+        child: AnimatedIcon(
+          icon: AnimatedIcons.play_pause,
+          progress: _controller,
+          color: Colors.white,
+        ),
+        onPressed: () async {
+          if (isPlaying) {
+            _controller.reverse();
+            audioPlayer.pause();
+          } else {
+            _controller.forward();
+            await audioPlayer.resume();
+          }
+        },
+      ),
     );
   }
 }
