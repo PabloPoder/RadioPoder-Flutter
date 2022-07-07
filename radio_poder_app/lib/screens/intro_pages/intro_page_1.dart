@@ -27,7 +27,7 @@ class IntroPage1 extends StatelessWidget {
               ),
             ),
             Text(
-              "Disfruta de tu musica favorita en cualquier momento!",
+              "¡Disfrutá de tu música favorita en cualquier momento!",
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontWeight: FontWeight.bold,

@@ -126,7 +126,7 @@ class _SorteoDetalleState extends State<SorteoDetalle> {
                 child: Text(
                   diasRestantes == 0 || sorteo.ganadorId != null
                       ? '¡Ya terminó!'
-                      : 'Faltan $diasRestantes días para que finalice!',
+                      : '¡Faltan $diasRestantes días para que finalice!',
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                       fontSize: 17,
@@ -155,7 +155,7 @@ class _SorteoDetalleState extends State<SorteoDetalle> {
                     return const Center(
                       child: Padding(
                         padding: EdgeInsets.all(8.0),
-                        child: Text("Error al cargar participacion"),
+                        child: Text("Error al cargar participación"),
                       ),
                     );
                   }
@@ -171,7 +171,7 @@ class _SorteoDetalleState extends State<SorteoDetalle> {
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: const Text(
-                                  'Participar!',
+                                  'Participar',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 17,
@@ -190,10 +190,10 @@ class _SorteoDetalleState extends State<SorteoDetalle> {
                                 ),
                                 child: Text(
                                   sorteo.ganadorId == null
-                                      ? 'Ya estas participando!'
+                                      ? '¡Ya estás participando!'
                                       : sorteo.ganadorId == usuarioId
-                                          ? 'Felicidades, ganaste!'
-                                          : 'Sorteo finalizado!',
+                                          ? '¡Felicidades, ganaste!'
+                                          : '¡Sorteo finalizado!',
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 17,

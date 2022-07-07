@@ -4,6 +4,8 @@ import 'package:radio_poder_app/models/sorteo.dart';
 import '../models/participacion.dart';
 import 'package:http/http.dart' as http;
 
+import '../utilities/constantes.dart';
+
 class Participaciones with ChangeNotifier {
   String? _token;
 
@@ -33,7 +35,7 @@ class Participaciones with ChangeNotifier {
   }
 
   Future<void> addParticipacion(int id) async {
-    const url = 'https://192.168.1.106:45455/api/Participaciones/';
+    const url = apiUrl + 'Participaciones/';
 
     try {
       final response = await http.post(
@@ -64,8 +66,7 @@ class Participaciones with ChangeNotifier {
               json.decode(response.body)["sorteo"]["fechaInicio"]),
           fechaFin:
               DateTime.parse(json.decode(response.body)["sorteo"]["fechaFin"]),
-          foto: "https://192.168.1.106:45455/" +
-              json.decode(response.body)["sorteo"]["foto"],
+          foto: fotoUrlConst + json.decode(response.body)["sorteo"]["foto"],
         ),
       ));
     } catch (e) {
@@ -74,7 +75,7 @@ class Participaciones with ChangeNotifier {
   }
 
   Future<void> fetchAndSetParticipaciones() async {
-    const url = 'https://192.168.1.106:45455/api/Participaciones/GetAll/';
+    const url = apiUrl + 'Participaciones/GetAll/';
 
     try {
       final response = await http.get(Uri.parse(url), headers: {
@@ -100,8 +101,7 @@ class Participaciones with ChangeNotifier {
               fechaInicio:
                   DateTime.parse(participacion["sorteo"]["fechaInicio"]),
               fechaFin: DateTime.parse(participacion["sorteo"]["fechaFin"]),
-              foto: "https://192.168.1.106:45455/" +
-                  participacion["sorteo"]["foto"],
+              foto: fotoUrlConst + participacion["sorteo"]["foto"],
               ganadorId: participacion["sorteo"]["ganadorId"],
             )));
       }

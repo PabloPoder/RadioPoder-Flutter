@@ -6,6 +6,10 @@ import '../models/usuario.dart';
 
 import 'package:http/http.dart' as http;
 
+import '../utilities/constantes.dart';
+
+// TODO: url const;
+
 class Comentarios with ChangeNotifier {
   String? _token;
 
@@ -26,7 +30,7 @@ class Comentarios with ChangeNotifier {
   }
 
   Future<void> fetchAndSetComentarios(int id) async {
-    final url = "https://192.168.1.106:45455/api/Comentarios/$id";
+    final url = apiUrl + "Comentarios/$id";
     try {
       final response = await http.get(Uri.parse(url), headers: {
         "Authorization": "Bearer " + _token!,
@@ -64,7 +68,7 @@ class Comentarios with ChangeNotifier {
   }
 
   Future<void> addComentario(String texto, int noticiaId) async {
-    const url = "https://192.168.1.106:45455/api/Comentarios/";
+    const url = apiUrl + "Comentarios/";
     try {
       final response = await http.post(Uri.parse(url),
           headers: {
@@ -101,7 +105,7 @@ class Comentarios with ChangeNotifier {
   }
 
   Future<void> deleteComentario(int id) async {
-    final url = "https://192.168.1.106:45455/api/Comentarios/$id";
+    final url = apiUrl + "Comentarios/BajaLogica/$id";
 
     try {
       final response = await http.delete(Uri.parse(url),

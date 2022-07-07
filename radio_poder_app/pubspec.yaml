@@ -14,22 +14,32 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.2
-  # mejor manejo de fechas
+  # Mejor formateo de fechas
   intl:
   timeago: ^3.2.2
-  # manejador de estados
+  # Manejador de estados
   provider: ^6.0.3
-  # peticiones http
+  # Peticiones http
   http: ^0.13.4
-  # datos en memoria
+  # Datos en memoria
   shared_preferences: ^2.0.15
   # para sorteos
   confetti: 
-  # pantalla de introduccion
+  # Pantalla de introduccion
   smooth_page_indicator:
   lottie:
-  #radio
+  # Reproductor de audio
   audioplayers: ^0.20.1
+  # Whatsapp messages
+  url_launcher:
+
+  # Google Sign In
+  firebase_auth:
+  google_sign_in:
+
+  # Google Icon
+  font_awesome_flutter:
+
 
 dev_dependencies:
   flutter_test:

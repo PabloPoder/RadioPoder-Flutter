@@ -106,7 +106,7 @@ class _NoticiaDetalleState extends State<NoticiaDetalle> {
                       padding: const EdgeInsets.all(16),
                       child: Text(
                         noticia.texto,
-                        textAlign: TextAlign.start,
+                        textAlign: TextAlign.justify,
                         style: const TextStyle(
                           fontSize: 17,
                         ),
@@ -131,7 +131,7 @@ class _NoticiaDetalleState extends State<NoticiaDetalle> {
                     const Padding(
                       padding: EdgeInsets.all(16),
                       child: Text(
-                        "Deja un comentario",
+                        "Dejá un comentario",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 17,

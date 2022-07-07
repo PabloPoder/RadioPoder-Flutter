@@ -21,7 +21,7 @@ class IntroPage2 extends StatelessWidget {
               height: 20,
             ),
             const Text(
-              "Mantenete informado sobre todo lo que esta pasando ahora!",
+              "¡Mantenete informado sobre todo lo que está pasando ahora!",
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontWeight: FontWeight.bold,

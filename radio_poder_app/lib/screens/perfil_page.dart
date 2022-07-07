@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:radio_poder_app/providers/auth.dart';
 import 'package:radio_poder_app/providers/sorteos.dart';
+import 'package:radio_poder_app/screens/editar_perfil_page.dart';
 
 import '../providers/participaciones.dart';
 
@@ -86,7 +87,7 @@ class _PerfilPageState extends State<PerfilPage> {
                     ),
                     validator: (value) {
                       if (value!.isEmpty || value.length < 3) {
-                        return 'Nombre invalido!';
+                        return 'Nombre inválido';
                       }
                       return null;
                     },
@@ -102,7 +103,7 @@ class _PerfilPageState extends State<PerfilPage> {
                     ),
                     validator: (value) {
                       if (value!.isEmpty || value.length < 3) {
-                        return 'Apellido invalido!';
+                        return 'Apellido inválido';
                       }
                       return null;
                     },
@@ -110,37 +111,43 @@ class _PerfilPageState extends State<PerfilPage> {
                       _editData['apellido'] = value!;
                     },
                   ),
-                  TextFormField(
-                    textInputAction: TextInputAction.next,
-                    textCapitalization: TextCapitalization.words,
-                    decoration: const InputDecoration(
-                      hintText: 'Contraseña',
+                  Consumer<Auth>(
+                    builder: (ctx, auth, _) => TextFormField(
+                      textInputAction: TextInputAction.next,
+                      textCapitalization: TextCapitalization.words,
+                      decoration: const InputDecoration(
+                        hintText: 'Contraseña',
+                      ),
+                      obscureText: true,
+                      enabled: auth.ingresoConGoogle ? false : true,
+                      controller: _passwordController,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Contraseña inválida';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        _editData['password'] = value!;
+                      },
                     ),
-                    obscureText: true,
-                    controller: _passwordController,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Contraseña invalida!';
-                      }
-                      return null;
-                    },
-                    onSaved: (value) {
-                      _editData['password'] = value!;
-                    },
                   ),
-                  TextFormField(
-                    textInputAction: TextInputAction.next,
-                    textCapitalization: TextCapitalization.words,
-                    decoration: const InputDecoration(
-                      hintText: 'Confirmar contraseña',
+                  Consumer<Auth>(
+                    builder: (context, auth, child) => TextFormField(
+                      textInputAction: TextInputAction.next,
+                      textCapitalization: TextCapitalization.words,
+                      decoration: const InputDecoration(
+                        hintText: 'Confirmar contraseña',
+                      ),
+                      obscureText: true,
+                      enabled: auth.ingresoConGoogle ? false : true,
+                      validator: (value) {
+                        if (value != _passwordController.text) {
+                          return 'Las contraseñas no coinciden';
+                        }
+                        return null;
+                      },
                     ),
-                    obscureText: true,
-                    validator: (value) {
-                      if (value != _passwordController.text) {
-                        return 'Las contraseñas no coinciden!';
-                      }
-                      return null;
-                    },
                   ),
                 ],
               ),
@@ -243,7 +250,7 @@ class _PerfilPageState extends State<PerfilPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: const [
                   Text(
-                    'Ups! Ha ocurrido un error.',
+                    '¡Ups! Ha ocurrido un error.',
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                   ),
@@ -301,8 +308,9 @@ class _PerfilPageState extends State<PerfilPage> {
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(20),
                                     ),
-                                    child: const Text('Editar Perfil'),
-                                    onPressed: () => _showEditModal(context),
+                                    child: const Text('Editar perfil'),
+                                    onPressed: () => Navigator.of(context)
+                                        .pushNamed(EditarPerfilPage.route),
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 30.0, vertical: 8.0),
                                     textColor: Colors.white,
@@ -314,11 +322,11 @@ class _PerfilPageState extends State<PerfilPage> {
                         ),
                         Consumer<Sorteos>(
                           builder: (context, sorteos, child) => _MyCard(
-                              titulo: "Sorteos Ganados:",
+                              titulo: "Sorteos ganados:",
                               data: sorteos
                                       .sorteosGanados(auth.usuario!.id)
                                       .isEmpty
-                                  ? "Aun no has ganado en ningún sorteo."
+                                  ? "Aún no has ganado ningún sorteo"
                                   : sorteos
                                       .sorteosGanados(auth.usuario!.id)
                                       .length
@@ -327,7 +335,7 @@ class _PerfilPageState extends State<PerfilPage> {
                         ),
                         Consumer<Participaciones>(
                           builder: (context, participaciones, child) => _MyCard(
-                              titulo: "Participaciones:",
+                              titulo: "Tus participaciones:",
                               data: participaciones.items.isEmpty
                                   ? "No has participado en ningún sorteo"
                                   : participaciones.items.length.toString(),

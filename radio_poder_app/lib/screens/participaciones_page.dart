@@ -56,7 +56,7 @@ class _ParticipacionesPageState extends State<ParticipacionesPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: const [
                         Text(
-                          'Ups! Ha ocurrido un error.',
+                          '¡Ups! Ha ocurrido un error.',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               fontSize: 22, fontWeight: FontWeight.bold),

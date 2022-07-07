@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/sorteo.dart';
+import '../utilities/constantes.dart';
 
 class Sorteos with ChangeNotifier {
   String? _token;
@@ -28,7 +29,7 @@ class Sorteos with ChangeNotifier {
   }
 
   Future<void> fetchAndSetSorteos() async {
-    const url = 'https://192.168.1.106:45455/api/Sorteos/GetAll';
+    const url = apiUrl + "Sorteos/GetAll";
 
     try {
       final response = await http.get(Uri.parse(url), headers: {
@@ -48,7 +49,7 @@ class Sorteos with ChangeNotifier {
             texto: sorteo["texto"],
             fechaInicio: DateTime.parse(sorteo["fechaInicio"]),
             fechaFin: DateTime.parse(sorteo["fechaFin"]),
-            foto: "https://192.168.1.106:45455/" + sorteo["foto"],
+            foto: fotoUrlConst + sorteo["foto"],
             ganadorId: sorteo["ganadorId"]));
       }
 

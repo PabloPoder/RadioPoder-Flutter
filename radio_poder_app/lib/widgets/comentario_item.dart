@@ -20,7 +20,7 @@ class ComentarioItem extends StatelessWidget {
     showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
-              title: const Text('Borrar comentario?'),
+              title: const Text('¿Borrar comentario?'),
               content: const Text(
                   'Esto no se puede deshacer y se eliminará de esta publicacion.'),
               actions: <Widget>[

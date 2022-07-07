@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/noticia.dart';
+import '../utilities/constantes.dart';
 
 class Noticias with ChangeNotifier {
   String? _token;
@@ -16,7 +17,7 @@ class Noticias with ChangeNotifier {
   List<Noticia> _items = [];
 
   Future<void> fetchAndSetNoticias() async {
-    const url = "https://192.168.1.106:45455/api/Noticias/GetAll";
+    const url = apiUrl + "Noticias/GetAll";
     try {
       final response = await http.get(Uri.parse(url), headers: {
         "Authorization": "Bearer " + _token!,
@@ -34,7 +35,7 @@ class Noticias with ChangeNotifier {
             titulo: noticia["titulo"],
             texto: noticia["texto"],
             fecha: DateTime.parse(noticia["fecha"]),
-            foto: "https://192.168.1.106:45455/" + noticia["foto"],
+            foto: fotoUrlConst + noticia["foto"],
             autor: noticia["autor"],
             tiempo: noticia["tiempo"]));
       }

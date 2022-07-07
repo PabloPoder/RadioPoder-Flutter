@@ -5,6 +5,7 @@ import 'package:radio_poder_app/providers/auth.dart';
 import 'package:radio_poder_app/providers/comentarios.dart';
 import 'package:radio_poder_app/providers/noticias.dart';
 import 'package:radio_poder_app/providers/participaciones.dart';
+import 'package:radio_poder_app/screens/editar_perfil_page.dart';
 import 'package:radio_poder_app/screens/sorteo_detalle.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -15,8 +16,11 @@ import 'screens/splash_screen.dart';
 import 'screens/navigation_bar_page.dart';
 import 'screens/noticia_detalle.dart';
 
+import 'package:firebase_core/firebase_core.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
 
   // Permitir uso de api no certificada?
   HttpOverrides.global = MyHttpOverrides();
@@ -87,6 +91,7 @@ class MyApp extends StatelessWidget {
             NavigationBarPage.route: (context) => const NavigationBarPage(),
             NoticiaDetalle.route: (context) => const NoticiaDetalle(),
             SorteoDetalle.route: (context) => const SorteoDetalle(),
+            EditarPerfilPage.route: (context) => const EditarPerfilPage(),
           },
         ),
       ),

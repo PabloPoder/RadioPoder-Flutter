@@ -1,16 +1,23 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:radio_poder_app/models/usuario.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../utilities/constantes.dart';
 
 class Auth with ChangeNotifier {
   String? _token;
   Usuario? _usuario;
   DateTime? _expirtyDate;
   Timer? _authTimer;
+  bool? _ingresoConGoogle;
+
+  bool get ingresoConGoogle => _ingresoConGoogle ?? false;
 
   Usuario? get usuario {
     if (_usuario != null) {
@@ -38,7 +45,7 @@ class Auth with ChangeNotifier {
 
   Future<void> register(
       String nombre, String apellido, String email, String password) async {
-    const url = "https://192.168.1.106:45455/api/Usuarios/Register";
+    const url = apiUrl + "Usuarios/Register";
 
     try {
       final response = await http.post(Uri.parse(url),
@@ -53,13 +60,15 @@ class Auth with ChangeNotifier {
       if (response.statusCode == 400) {
         throw (response.body);
       }
+
+      await login(email, password);
     } catch (error) {
       rethrow;
     }
   }
 
   Future<void> login(String email, String password) async {
-    const url = "https://192.168.1.106:45455/api/Usuarios/Login";
+    const url = apiUrl + "Usuarios/Login";
 
     try {
       final response = await http.post(Uri.parse(url),
@@ -103,6 +112,9 @@ class Auth with ChangeNotifier {
     if (!prefs.containsKey('userData')) {
       return false;
     }
+    if (!prefs.containsKey('ingresoConGoogle')) {
+      return false;
+    }
 
     final extractedUserData =
         json.decode(prefs.getString('userData')!) as Map<String, dynamic>;
@@ -114,6 +126,7 @@ class Auth with ChangeNotifier {
     }
     _token = extractedUserData['token'].toString();
     _expirtyDate = expiryDate;
+    _ingresoConGoogle = prefs.getBool('ingresoConGoogle');
     usuarioLogeado();
     notifyListeners();
     _autoLogout();
@@ -128,11 +141,14 @@ class Auth with ChangeNotifier {
       _authTimer!.cancel();
       _authTimer = null;
     }
+    // Cerramos sesion de google en caso de que se haya logeado con ella.
+    googleLogout();
 
     notifyListeners();
     final prefs = await SharedPreferences.getInstance();
     prefs.setBool('showIntro', true);
     prefs.remove('userData');
+    prefs.remove('ingresoConGoogle');
   }
 
   void _autoLogout() {
@@ -144,7 +160,7 @@ class Auth with ChangeNotifier {
   }
 
   Future<void> usuarioLogeado() async {
-    const url = "https://192.168.1.106:45455/api/Usuarios/UsuarioLogeado";
+    const url = apiUrl + "Usuarios/UsuarioLogeado";
 
     try {
       final response = await http.get(Uri.parse(url), headers: {
@@ -174,8 +190,7 @@ class Auth with ChangeNotifier {
 
   Future<void> editarUsuario(
       String nombre, String apellido, String password) async {
-    final url =
-        "https://192.168.1.106:45455/api/Usuarios/EditarUsuario/${_usuario!.id}";
+    final url = apiUrl + "Usuarios/EditarUsuario/${_usuario!.id}";
 
     try {
       final response = await http.put(Uri.parse(url),
@@ -206,5 +221,112 @@ class Auth with ChangeNotifier {
     } catch (e) {
       throw Exception(e.toString());
     }
+  }
+
+  Future<void> editarUsuarioGoogle(String nombre, String apellido) async {
+    final url = apiUrl + "Usuarios/EditarUsuarioGoogle/${_usuario!.id}";
+
+    try {
+      final response = await http.put(Uri.parse(url),
+          headers: {
+            "Authorization": "Bearer " + _token!,
+            "Content-Type": "application/json; charset=UTF-8"
+          },
+          body: json.encode({
+            'nombre': nombre,
+            'apellido': apellido,
+            'id': _usuario!.id,
+            'password': _usuario!.password,
+            'email': _usuario!.email,
+          }));
+
+      if (response.statusCode == 400) {
+        throw (response.body);
+      }
+
+      _usuario = Usuario(
+        id: json.decode(response.body)['id'],
+        nombre: json.decode(response.body)['nombre'],
+        apellido: json.decode(response.body)['apellido'],
+        email: json.decode(response.body)['email'],
+      );
+
+      notifyListeners();
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  // Google Sign In
+  // Variables para acceder a datos y funciones de Google
+  final googleSignIn = GoogleSignIn();
+  GoogleSignInAccount? _currentUser;
+  GoogleSignInAccount? get currentUser => _currentUser;
+
+  Future googleLogin() async {
+    final googleUser = await googleSignIn.signIn();
+    if (googleUser == null) return;
+    _currentUser = googleUser;
+
+    final googleAuth = await googleUser.authentication;
+
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+
+    await FirebaseAuth.instance.signInWithCredential(credential);
+
+    User? _usuarioGoogle = FirebaseAuth.instance.currentUser;
+
+    // Revisar si usuario esta registrado en api, de no ser asi registrarlo.
+    // Si ya esta registrado, entonces logearlo.
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool('ingresoConGoogle', true);
+    _ingresoConGoogle = prefs.getBool('ingresoConGoogle');
+
+    await logearloORegistrarlo(_usuarioGoogle);
+    notifyListeners();
+  }
+
+  Future<void> logearloORegistrarlo(User? _usuarioGoogle) async {
+    final url = apiUrl + "Usuarios/GetPorEmail${_usuarioGoogle!.email}";
+    print(url);
+
+    try {
+      final response = await http.get(Uri.parse(url));
+
+      //Si ya hay un usuario registrado devuelve 200.
+      if (response.statusCode == 200) {
+        // Si ya esta registrado, entonces logearlo.
+        await login(_usuarioGoogle.email!, _usuarioGoogle.uid);
+        _ingresoConGoogle = true;
+        notifyListeners();
+      } else {
+        // Registro del usuario en la api
+        // Separo el nombre del apellido de _usuarioGoogle.displayName
+        List<String> _usuarioGoogleFullName =
+            _usuarioGoogle.displayName!.split(" ");
+
+        // Registro el usuario en api.
+        // Utilizo el _usuarioGoogle.uid como clave
+        await register(_usuarioGoogleFullName[0], _usuarioGoogleFullName[1],
+            _usuarioGoogle.email!, _usuarioGoogle.uid);
+        notifyListeners();
+      }
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future googleLogout() async {
+    await googleSignIn.signOut();
+    FirebaseAuth.instance.signOut();
+    _currentUser = null;
+
+    final prefs = await SharedPreferences.getInstance();
+    prefs.remove('ingresoConGoogle');
+    _ingresoConGoogle = false;
+    notifyListeners();
   }
 }

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "676922160807",
+    "project_id": "radiopoder-a4128",
+    "storage_bucket": "radiopoder-a4128.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:676922160807:android:47be2267121b7cee96cd82",
+        "android_client_info": {
+          "package_name": "com.example.radio_poder_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "676922160807-pavsosuum9g9kj1egjg1v6qotbtsv00r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBAcCuD-Ih0oZjdQFnaAU-HbukIY2__MTU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "676922160807-pavsosuum9g9kj1egjg1v6qotbtsv00r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

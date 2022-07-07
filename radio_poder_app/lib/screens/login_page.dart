@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/auth.dart';
@@ -161,7 +162,7 @@ class _AuthCardState extends State<AuthCard> {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeIn,
-      height: _authMode == AuthMode.signup ? 500 : 300,
+      height: _authMode == AuthMode.signup ? 500 : 350,
       child: Container(
         // height: _authMode == AuthMode.signup ? 400 : 320,
         // constraints:
@@ -194,7 +195,7 @@ class _AuthCardState extends State<AuthCard> {
                     ),
                     validator: (value) {
                       if (value!.isEmpty || !value.contains('@')) {
-                        return 'Email invalido!';
+                        return 'E-mail inválido';
                       }
                       return null;
                     },
@@ -225,7 +226,7 @@ class _AuthCardState extends State<AuthCard> {
                     controller: _passwordController,
                     validator: (value) {
                       if (value!.isEmpty || value.length < 4) {
-                        return 'La contraseña es demasiado corta!';
+                        return 'La contraseña es demasiado corta';
                       }
                       return null;
                     },
@@ -254,7 +255,7 @@ class _AuthCardState extends State<AuthCard> {
                           decoration: const InputDecoration(
                             border: InputBorder.none,
                             prefixIcon: Icon(Icons.password),
-                            hintText: "Confirmar Contraseña",
+                            hintText: "Confirmar contraseña",
                           ),
                           obscureText: true,
                           validator: _authMode == AuthMode.signup
@@ -289,7 +290,7 @@ class _AuthCardState extends State<AuthCard> {
                           ),
                           validator: (value) {
                             if (value!.isEmpty) {
-                              return 'Nombre invalido!';
+                              return 'Nombre inválido';
                             }
                             return null;
                           },
@@ -320,7 +321,7 @@ class _AuthCardState extends State<AuthCard> {
                           ),
                           validator: (value) {
                             if (value!.isEmpty) {
-                              return 'Apellido invalido!';
+                              return 'Apellido inválido';
                             }
                             return null;
                           },
@@ -352,8 +353,8 @@ class _AuthCardState extends State<AuthCard> {
                 FlatButton(
                   child: Text(
                     _authMode == AuthMode.login
-                        ? 'No tienes cuenta? Crea una ahora!'
-                        : 'Ingresar con tu cuenta!',
+                        ? '¿No tenés cuenta? ¡Creá una ahora!'
+                        : 'Ingresar con tu cuenta',
                     textAlign: TextAlign.center,
                   ),
                   onPressed: _switchAuthMode,
@@ -361,6 +362,24 @@ class _AuthCardState extends State<AuthCard> {
                       const EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   textColor: Colors.orangeAccent,
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    elevation: 6,
+                    primary: Colors.white,
+                    onPrimary: Colors.black,
+                    minimumSize: const Size(double.infinity, 50),
+                  ),
+                  icon: const FaIcon(
+                    FontAwesomeIcons.google,
+                    color: Colors.red,
+                  ),
+                  label: const Text("Ingresa con Google"),
+                  onPressed: () {
+                    final provider = Provider.of<Auth>(context, listen: false);
+                    provider.googleLogin();
+                  },
                 ),
               ],
             ),

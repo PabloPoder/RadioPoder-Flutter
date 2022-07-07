@@ -18,7 +18,7 @@ class IntroPage3 extends StatelessWidget {
                 "https://assets1.lottiefiles.com/packages/lf20_zywherkr.json",
                 height: 350),
             Text(
-              "Participa en sorteos y gana premios increibles!",
+              "¡Participá en sorteos y gana premios increíbles!",
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontWeight: FontWeight.bold,

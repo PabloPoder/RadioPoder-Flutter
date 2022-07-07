@@ -13,14 +13,14 @@ class ParticipacionItem extends StatelessWidget {
   String _ganador() {
     if (participacion.sorteo.ganadorId != null &&
         participacion.sorteo.ganadorId == participacion.usuarioId) {
-      return 'Ganaste!';
+      return '¡Ganaste!';
     } else if (participacion.sorteo.ganadorId == null) {
       return 'Finaliza en ' +
           participacion.sorteo.fechaFin
               .difference(DateTime.now())
               .inDays
               .toString() +
-          ' días!';
+          ' días';
     }
     return 'No ganaste :(';
   }
