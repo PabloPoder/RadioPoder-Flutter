@@ -3,10 +3,17 @@
 ![GitHub repo size](https://img.shields.io/github/repo-size/PabloPoder/RadioPoder-Flutter?logo=github)
 <a href="https://www.youtube.com/watch?v=q-87xRNtrhs" target="_blank">![YouTube Video Views](https://img.shields.io/youtube/views/q-87xRNtrhs?style=social)</a>
 
-Esta es una app que desarrolle en mi universidad como trabajo final.
-Para ello hice uso de <a href="https://flutter.dev/?gclsrc=aw.ds&gclid=Cj0KCQiAveebBhD_ARIsAFaAvrF9VdhRCkwAT4IkVlkvAjbS9QmhLwafUstez0F9-cfGplJklg4gsLMaAku8EALw_wcB">Flutter</a>, un SDK de Google que se utiliza para desarrollar aplicaciones multiplataforma para Android, iOS, Linux, macOS, Windows, Google Fuchsia y la web desde una única base de código.
+Descripción del proyecto
+Este proyecto es una aplicación móvil que desarrollé como trabajo final para mi universidad. Utilicé Flutter, un SDK de Google que permite desarrollar aplicaciones multiplataforma para Android, iOS, Linux, macOS, Windows, Google Fuchsia y la web desde una única base de código. Además, diseñé el UX/UI y creé una API Rest con .NET CORE para permitir peticiones de tipo GET, POST, DELETE, PUT y PATCH y utilizar datos dinámicos en la aplicación.
 
-Ademas de diseñar el UX/UI, cree una API Rest con .NET CORE para poder hacer peticiones de tipo GET, POST, DETELE, PUT Y PATCH y hacer uso de datos dinamicos en la app.
+Funcionalidades
+Interfaz de usuario intuitiva y fácil de usar.
+API Restful implementada con .NET CORE para manejar las solicitudes de datos de la aplicación.
+Soporte para peticiones de tipo GET, POST, DELETE, PUT y PATCH.
+Integración de datos dinámicos en la aplicación.
+Tecnologías utilizadas
+Flutter
+.NET CORE
 
 - <a href="https://github.com/PabloPoder/RadioPoder-Api.Net6" target="_blank">API Rest</a>
 
